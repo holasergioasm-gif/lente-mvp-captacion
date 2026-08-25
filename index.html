@@ -142,6 +142,10 @@
    simulado y está listado en HANDOFF.md para implementar.
    ========================================================= */
 
+// DEMO: en true, nadie queda descartado por reglas rojas; las reglas se calculan igual y se ven en el panel.
+// Poner en false para reponer el corte real. (Pedido del 25/8: recorrer hasta la cámara sin rechazo.)
+const SIN_FILTRO = true;
+
 // ---------- Configuración (lo que el dueño edita desde el panel) ----------
 const config = {
   puesto: 'Vendedor/a de local · Star Deportes / Otero Deportivo',
@@ -402,7 +406,7 @@ views.cv = el => {
   $('#cvsel').onchange=e=>c.cvKey=e.target.value;
   $('#next').onclick=()=>{
     c.cv=CVS[c.cvKey]; c.reglas=evaluarReglas(c); c.diff=diffCV(c); c.preguntas=armarPreguntas(c);
-    if(c.reglas.some(r=>r.tipo==='rojo')){ c.estado='descartado por reglas'; candidatos.unshift(c); go('fuera'); } else go('camara');
+    if(!SIN_FILTRO && c.reglas.some(r=>r.tipo==='rojo')){ c.estado='descartado por reglas'; candidatos.unshift(c); go('fuera'); } else go('camara');
   };
 };
 

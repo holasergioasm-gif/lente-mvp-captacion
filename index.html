@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trabajá con nosotros · Grupo Lente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Manrope:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0b0c; --ink-2:#3a3d42; --ink-3:#7a7f87;
+    --paper:#ffffff; --surface:#f3f4f6; --line:#e2e5ea;
+    --lente:#188de6; --lente-deep:#0f6fb8; --lente-tint:#e8f3fd;
+    --ok:#15803d; --warn:#b45309; --warn-tint:#fff4e5; --red:#c2262e; --red-tint:#fdecec;
+    --display:'Manrope',system-ui,sans-serif; --mark:'Syncopate',sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --r:14px;
+  }
+  *{box-sizing:border-box} html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.5}
+  a{color:var(--lente)} button{font:inherit}
+  .wrap{max-width:640px;margin:0 auto;padding:0 20px 80px}
+  header.top{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line)}
+  .mark{font-family:var(--mark);font-weight:700;font-size:13px;letter-spacing:.32em;text-transform:uppercase;display:flex;gap:.6em;align-items:baseline}
+  .mark .e{color:var(--lente)}
+  .top a.panel-link{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);text-decoration:none;font-weight:600}
+  .top a.panel-link:hover{color:var(--lente)}
+
+  /* Barras de progreso: cuatro etapas, dibujadas como las barras de la E del logo */
+  .steps{display:flex;gap:8px;margin:28px 0 8px}
+  .steps span{flex:1;height:5px;background:var(--line);border-radius:3px;transition:background .3s}
+  .steps span.on{background:var(--lente)} .steps span.done{background:var(--ink)}
+  .steps-label{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:26px}
+
+  h1{font-size:clamp(30px,6vw,42px);line-height:1.05;letter-spacing:-.02em;font-weight:800;margin:0 0 14px}
+  h2{font-size:22px;line-height:1.2;letter-spacing:-.01em;font-weight:800;margin:0 0 12px}
+  h3{font-size:15px;margin:22px 0 8px;font-weight:800}
+  p{margin:0 0 12px} .muted{color:var(--ink-3)} .small{font-size:14px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--lente-deep);font-weight:600;margin-bottom:10px}
+
+  .card{background:var(--surface);border-radius:var(--r);padding:18px 18px}
+  .card + .card{margin-top:12px}
+  .cond{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--line)}
+  .cond div{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .cond b{font-weight:800;text-align:right}
+  .rule{border:2px solid var(--ink);border-radius:var(--r);padding:16px 18px;margin:22px 0}
+  .rule .eyebrow{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:15px 26px;font-weight:800;font-size:16px;cursor:pointer;background:var(--ink);color:#fff;width:100%;transition:transform .08s,background .15s}
+  .btn:hover{background:#000} .btn:active{transform:scale(.99)}
+  .btn.blue{background:var(--lente)} .btn.blue:hover{background:var(--lente-deep)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)} .btn.ghost:hover{border-color:var(--ink);background:transparent}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--lente);outline-offset:2px}
+  .row{display:flex;gap:10px} .row .btn{flex:1}
+  .actions{margin-top:26px;display:flex;flex-direction:column;gap:10px}
+
+  label{display:block;font-weight:600;font-size:14px;margin:16px 0 6px}
+  input[type=text],input[type=tel],input[type=date],input[type=number],select,textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font:inherit;background:#fff;color:var(--ink)}
+  textarea{min-height:80px;resize:vertical}
+  .help{font-size:13px;color:var(--ink-3);margin-top:5px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .chip{border:1.5px solid var(--line);border-radius:999px;padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer;background:#fff;user-select:none}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .grid{display:grid;grid-template-columns:auto repeat(2,1fr);gap:6px;margin-top:8px;font-size:13px}
+  .grid .h{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-3);text-transform:uppercase;text-align:center;padding-bottom:4px}
+  .grid .d{font-weight:700;padding:8px 6px 8px 0}
+  .cell{border:1.5px solid var(--line);border-radius:8px;height:38px;cursor:pointer;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;color:transparent}
+  .cell.on{background:var(--lente);border-color:var(--lente);color:#fff}
+  .turno{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;background:#fff;margin-top:8px}
+  .turno.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+  .turno .box{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);flex:none;margin-top:2px}
+  .turno.on .box{background:var(--ink);border-color:var(--ink)}
+  .turno b{display:block} .turno span{font-size:13px;color:var(--ink-3)}
+
+  .drop{border:2px dashed var(--line);border-radius:var(--r);padding:26px;text-align:center;cursor:pointer;background:#fff}
+  .drop.has{border-style:solid;border-color:var(--ink)}
+  .demo{margin-top:14px;padding:12px 14px;background:var(--lente-tint);border-radius:10px;font-size:13px}
+  .demo select{margin-top:6px}
+
+  /* Cámara y grabación: la firma del sistema. Nada de pausas, un reloj que solo baja. */
+  .stage{background:var(--ink);color:#fff;border-radius:var(--r);padding:20px;position:relative;overflow:hidden}
+  .stage video{width:100%;aspect-ratio:4/3;background:#000;border-radius:10px;object-fit:cover;transform:scaleX(-1)}
+  .stage .q{font-size:22px;font-weight:800;line-height:1.2;margin:16px 0 6px;letter-spacing:-.01em}
+  .stage .phase{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9fd0f7}
+  .timer{position:relative;height:10px;background:#2a2d33;border-radius:5px;margin-top:14px;overflow:hidden}
+  .timer i{position:absolute;inset:0;background:var(--lente);transform-origin:left;transform:scaleX(1)}
+  .timer.rec i{background:#ff3b30}
+  .count{font-family:var(--mono);font-size:44px;font-weight:600;line-height:1;margin-top:10px;display:flex;justify-content:space-between;align-items:baseline}
+  .count small{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9a9fa8}
+  .rec-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#ff3b30;margin-right:8px;animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  @media (prefers-reduced-motion:reduce){.rec-dot{animation:none}}
+  .qlist{counter-reset:q;list-style:none;padding:0;margin:14px 0 0}
+  .qlist li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .qlist li:before{counter-increment:q;content:counter(q);font-family:var(--mono);color:var(--ink-3);min-width:1.4em}
+  .tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--line);color:var(--ink-2);vertical-align:middle;margin-left:6px}
+  .tag.dyn{background:var(--lente-tint);color:var(--lente-deep)}
+
+  .out{border-left:4px solid var(--red);padding:14px 16px;background:var(--red-tint);border-radius:0 10px 10px 0}
+  .ok{border-left:4px solid var(--ok);padding:14px 16px;background:#eaf7ee;border-radius:0 10px 10px 0}
+
+  /* Panel del dueño */
+  .panel{max-width:1100px;margin:0 auto;padding:0 20px 80px;display:grid;grid-template-columns:200px 1fr;gap:28px}
+  .panel nav{position:sticky;top:20px;align-self:start;display:flex;flex-direction:column;gap:4px;padding-top:28px}
+  .panel nav button{text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:8px;font-weight:700;color:var(--ink-2);cursor:pointer}
+  .panel nav button.on{background:var(--ink);color:#fff}
+  .panel section{padding-top:28px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:10px 8px;border-bottom:1px solid var(--line)}
+  td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr.click{cursor:pointer} tr.click:hover td{background:var(--surface)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:999px;font-weight:600}
+  .pill.red{background:var(--red-tint);color:var(--red)} .pill.warn{background:var(--warn-tint);color:var(--warn)} .pill.ok{background:#eaf7ee;color:var(--ok)} .pill.grey{background:var(--line);color:var(--ink-2)}
+  .score{font-family:var(--mono);font-weight:600}
+  .map{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr;font-size:13px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .map div{padding:10px 12px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+  .map div:nth-child(4n){border-right:0}
+  .map .hd{background:var(--surface);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .map .k{font-weight:700}
+  .map .c-red{background:var(--red-tint)} .map .c-warn{background:var(--warn-tint)} .map .c-ok{background:#eaf7ee}
+  .clips{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:10px}
+  .clips video{width:100%;border-radius:10px;background:#000;aspect-ratio:4/3}
+  .clips p{font-size:13px;margin:6px 0 0}
+  .cfg label{margin-top:14px} .cfg .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+  .toast.show{opacity:1}
+  @media (max-width:820px){.panel{grid-template-columns:1fr}.panel nav{position:static;flex-direction:row;flex-wrap:wrap}.map{grid-template-columns:1fr 1fr}.map div:nth-child(4n){border-right:1px solid var(--line)}.map div:nth-child(2n){border-right:0}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a href="#/" class="mark" style="text-decoration:none;color:inherit" aria-label="Grupo Lente">
+    <span>Grupo L<span class="e">E</span>nt<span class="e">E</span></span>
+  </a>
+  <a href="#/panel" class="panel-link" id="panelLink">Panel</a>
+</header>
+<main id="app" aria-live="polite"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   GRUPO LENTE · MVP de captación y filtro · prototipo v0.1
+   Un solo archivo, sin backend. Todo lo marcado con "SIM:" es
+   simulado y está listado en HANDOFF.md para implementar.
+   ========================================================= */
+
+// ---------- Configuración (lo que el dueño edita desde el panel) ----------
+const config = {
+  puesto: 'Vendedor/a de local · Star Deportes / Otero Deportivo',
+  horario: '9 a 13 y 16 a 20',
+  corte: '3 horas de corte al mediodía (no alcanza para volver a tu casa)',
+  sucursal: 'Sucursal rotativa entre locales de La Plata y alrededores',
+  rotacion: 'Horario rotativo, incluye sábados',
+  sueldo: 'Sueldo de convenio de comercio + comisiones por venta',
+  extra: 'Capacitación paga desde el primer día. El 95% de nuestra gente entró sin experiencia.',
+  edadMin: 18,
+  viajeMax: 60,
+  bloqueoMeses: 6,
+  compromiso: 'Si empezás la postulación tenés que terminarla en la misma sesión. Dura 10 minutos, necesitás cámara y micrófono. Si la dejás a la mitad, no vas a poder postularte de nuevo por 6 meses.',
+  fechaRespuesta: 'viernes 4 de septiembre',
+  turnos: [
+    {id:'T1', nombre:'Lunes a viernes, 9–13 y 16–20', lugar:'Sucursal Centro', dias:[0,1,2,3,4], franjas:['m','t']},
+    {id:'T2', nombre:'Martes a sábado, 16–20', lugar:'Sucursal City Bell', dias:[1,2,3,4,5], franjas:['t']},
+    {id:'T3', nombre:'Sábados y domingos, 9–13 y 16–20', lugar:'Sucursal Los Hornos', dias:[5,6], franjas:['m','t']},
+  ],
+  bloqueados: [{dni:'11111111', hasta:'2027-02-10', motivo:'Abandonó en el paso de video'}],
+};
+
+// Barrios → minutos de viaje a la sucursal más cercana. SIM: en producción, Distance Matrix / OSRM con domicilio real.
+const BARRIOS = {'Centro (casco)':10,'Tolosa':15,'Los Hornos':15,'Villa Elvira':20,'San Carlos':20,'Gonnet':25,'City Bell':20,'Villa Elisa':30,'Berisso':35,'Ensenada':35,'Olmos':40,'Quilmes':75,'Florencio Varela':70,'Otro (más de 1 h)':90};
+const DIAS = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+// CVs de ejemplo. SIM: en producción el PDF pasa por un LLM que devuelve este mismo esquema.
+const CVS = {
+  ninguno: null,
+  desact: {label:'CV desactualizado (dice que estudia, ya dejó)', fecha:'2025-06', domicilio:'Los Hornos',
+    estudia:{que:'Contador Público, UNLP, 2º año'}, trabaja:null,
+    empleos:[{donde:'Kiosco 24hs Los Hornos', rol:'Atención al público', desde:'2024-03', hasta:'2025-02'}]},
+  omision: {label:'CV con omisión (trabajo vigente que no declaró)', fecha:'2026-07', domicilio:'Tolosa',
+    estudia:null, trabaja:{donde:'Heladería Grido Tolosa', rol:'Cajero', desde:'2025-11', hasta:null},
+    empleos:[{donde:'Heladería Grido Tolosa', rol:'Cajero', desde:'2025-11', hasta:null}]},
+  consistente: {label:'CV consistente y actualizado', fecha:'2026-08', domicilio:'Centro (casco)',
+    estudia:{que:'Marketing, UTN, 1º año, cursa martes y jueves 18–22'}, trabaja:null,
+    empleos:[{donde:'Local de ropa Nike Store La Plata', rol:'Vendedor', desde:'2025-01', hasta:'2026-05'}]},
+};
+
+// Preguntas fijas del video
+const FIJAS = [
+  {id:'V1', tipo:'fija', texto:'Tenés 30 segundos y no te voy a interrumpir. Contame algo tuyo que no esté en ningún CV.', mide:'Fluidez con desconocidos'},
+  {id:'V4', tipo:'fija', texto:'Son las 19:50 y el local cierra a las 20. Entra un cliente que quiere ver varios pares antes de decidir. ¿Qué hacés y cómo lo encarás?', mide:'Criterio en situaciones'},
+  {id:'V5', tipo:'fija', texto:'Un cliente está molesto y te habla mal por un problema que vos no generaste. ¿Cómo actuás?', mide:'Criterio en situaciones'},
+];
+const RELLENO = [
+  {id:'V6', tipo:'fija', texto:'Viste el horario cortado y la sucursal rotativa. ¿Qué es lo que más te preocupa de eso? Sé sincero, no hay respuesta correcta.', mide:'Honestidad sobre condiciones'},
+  {id:'V3', tipo:'fija', texto:'¿Qué te criticaría alguien que trabajó, estudió o compartió actividades con vos?', mide:'Autocrítica'},
+];
+
+// ---------- Estado del candidato ----------
+let cand = null;
+function newCand(){ return {
+  id:'C-'+Math.random().toString(36).slice(2,7).toUpperCase(), creado:new Date(),
+  dni:'', wa:'', nombre:'', nac:'', barrio:'', edad:null,
+  sit:'', estQue:'', estDias:new Set(), estHor:'', trabDonde:'', trabDias:new Set(), trabHor:'', nada:'',
+  grilla:new Set(), turnos:new Set(), busca:'',
+  cvFile:null, cvKey:'ninguno', cv:null,
+  reglas:null, diff:[], preguntas:[], clips:[], flagsVideo:[], escrito:{}, estado:'iniciado', tabSwitch:0,
+};}
+const candidatos = []; // SIM: base de datos
+let stream = null;
+
+// ---------- Utilidades ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s??'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function edadDe(iso){ if(!iso) return null; const d=new Date(iso), n=new Date(); let e=n.getFullYear()-d.getFullYear(); if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate())) e--; return e; }
+function mesesDesde(ym){ if(!ym) return 0; const [y,m]=ym.split('-').map(Number); const n=new Date(); return (n.getFullYear()-y)*12+(n.getMonth()+1-m); }
+function steps(n,label){ return `<div class="steps">${[1,2,3,4].map(i=>`<span class="${i<n?'done':i===n?'on':''}"></span>`).join('')}</div><div class="steps-label">${label}</div>`; }
+
+// ---------- MOTOR: reglas duras ----------
+function evaluarReglas(c){
+  const out=[];
+  if(c.edad!==null && c.edad<config.edadMin) out.push({tipo:'rojo', k:'Edad', txt:`Menor de ${config.edadMin}.`});
+  const viaje=BARRIOS[c.barrio]??90;
+  if(viaje>config.viajeMax) out.push({tipo:'rojo', k:'Distancia', txt:`${viaje} min de viaje, más del máximo (${config.viajeMax}).`});
+  // Compatibilidad grilla vs turnos abiertos
+  const compat = config.turnos.filter(t=>t.dias.every(d=>t.franjas.every(f=>c.grilla.has(d+f))));
+  if(compat.length===0) out.push({tipo:'rojo', k:'Disponibilidad', txt:'La grilla no cubre ninguno de los turnos abiertos.'});
+  // Eligió un turno que su grilla no cubre
+  for(const id of c.turnos){ const t=config.turnos.find(x=>x.id===id); if(t && !compat.includes(t)) out.push({tipo:'amarillo', k:'Turnos', txt:`Marcó "${t.nombre}" pero su grilla no lo cubre entero.`}); }
+  // Contradicción: grilla libre en franjas donde dijo que cursa/trabaja
+  const ocup=[]; const franjaDe = h => (h==='m'?'m':h==='t'?'t':null);
+  if((c.sit==='estudio'||c.sit==='ambas') && c.estHor){ const f=franjaDe(c.estHor); if(f) for(const d of c.estDias) if(c.grilla.has(d+f)) ocup.push(`${DIAS[d]} (${f==='m'?'mañana':'tarde'}, cursa)`); }
+  if((c.sit==='trabajo'||c.sit==='ambas') && c.trabHor){ const f=franjaDe(c.trabHor); if(f) for(const d of c.trabDias) if(c.grilla.has(d+f)) ocup.push(`${DIAS[d]} (${f==='m'?'mañana':'tarde'}, trabaja)`); }
+  if(ocup.length) out.push({tipo:'rojo', k:'Contradicción', txt:`Marcó libre en la grilla franjas en las que declaró estar ocupado: ${ocup.join(', ')}.`});
+  if(c.turnos.size===3 && c.grilla.size<14) out.push({tipo:'amarillo', k:'Turnos', txt:'Aceptó los tres turnos, incluyendo fin de semana y sucursal lejana, con huecos en la grilla.'});
+  return out;
+}
+
+// ---------- MOTOR: diff CV vs formulario → repreguntas ----------
+function diffCV(c){
+  const cv=c.cv, d=[]; const estudiaForm=(c.sit==='estudio'||c.sit==='ambas'), trabajaForm=(c.sit==='trabajo'||c.sit==='ambas');
+  if(!cv){
+    d.push({estado:'sin CV', k:'CV', cv:'—', form:'—', prio:1, q:{id:'R-sinCV', tipo:'dinámica', texto:'No subiste CV, no hay problema. Contame lo último que hiciste: trabajo, estudio o lo que sea, con lugar y fechas.', mide:'Consistencia de disponibilidad'}});
+    return d;
+  }
+  const viejo = mesesDesde(cv.fecha)>6;
+  // Estudio
+  if(cv.estudia && !estudiaForm) d.push({estado: viejo?'desactualizado':'contradicción', k:'Estudia', cv:cv.estudia.que, form:'No estudia', prio:2,
+    q:{id:'R-est', tipo:'dinámica', texto:`En tu CV figura que estudiabas ${cv.estudia.que.split(',')[0]}. ¿Qué pasó con eso? ¿Cuándo dejaste y por qué?`, mide:'Consistencia de disponibilidad'}});
+  if(!cv.estudia && estudiaForm) d.push({estado:'omisión', k:'Estudia', cv:'No figura', form:c.estQue||'Estudia', prio:3,
+    q:{id:'R-est2', tipo:'dinámica', texto:`Nos contaste que estudiás ${c.estQue||'algo'} pero en el CV no aparece. ¿Desde cuándo? ¿Qué días y en qué horario cursás este cuatrimestre?`, mide:'Consistencia de disponibilidad'}});
+  if(cv.estudia && estudiaForm) d.push({estado:'coincide', k:'Estudia', cv:cv.estudia.que, form:c.estQue||'Estudia', prio:9});
+  // Trabajo vigente
+  const cvTrab = cv.trabaja && !cv.trabaja.hasta;
+  if(cvTrab && !trabajaForm) d.push({estado: viejo?'desactualizado':'contradicción', k:'Trabaja', cv:`${cv.trabaja.donde} (vigente en CV)`, form:'No trabaja', prio:1,
+    q:{id:'R-trab', tipo:'dinámica', texto:`En el CV aparece ${cv.trabaja.donde} como trabajo actual. ¿Seguís ahí? Si no, ¿hasta cuándo estuviste y por qué terminó?`, mide:'Consistencia de disponibilidad'}});
+  if(!cvTrab && trabajaForm) d.push({estado:'omisión', k:'Trabaja', cv:'No figura como vigente', form:c.trabDonde||'Trabaja', prio:1,
+    q:{id:'R-trab2', tipo:'dinámica', texto:`Nos contaste que trabajás en ${c.trabDonde||'un lugar'} pero no está en el CV. ¿Desde cuándo, qué días y en qué horario?`, mide:'Consistencia de disponibilidad'}});
+  if(cvTrab && trabajaForm) d.push({estado:'coincide', k:'Trabaja', cv:cv.trabaja.donde, form:c.trabDonde||'Trabaja', prio:9});
+  if(!cvTrab && !trabajaForm) d.push({estado:'coincide', k:'Trabaja', cv:'No', form:'No', prio:9});
+  // Domicilio
+  if(cv.domicilio && c.barrio && cv.domicilio!==c.barrio) d.push({estado:'contradicción', k:'Domicilio', cv:cv.domicilio, form:c.barrio, prio:4,
+    q:{id:'R-dom', tipo:'dinámica', texto:`El CV dice ${cv.domicilio} y acá pusiste ${c.barrio}. ¿Desde dónde viajarías al local y cuánto tardás?`, mide:'Consistencia de disponibilidad'}});
+  else if(cv.domicilio) d.push({estado:'coincide', k:'Domicilio', cv:cv.domicilio, form:c.barrio, prio:9});
+  // Fecha del CV vs "hace cuánto buscás"
+  const meses=mesesDesde(cv.fecha);
+  if(meses>6 && c.busca==='<1') d.push({estado:'desactualizado', k:'Fecha del CV', cv:`${meses} meses`, form:'Busca hace menos de 1 mes', prio:5,
+    q:{id:'R-fecha', tipo:'dinámica', texto:`Tu CV tiene más de seis meses. ¿Qué cambió en tu vida desde que lo armaste?`, mide:'Consistencia de disponibilidad'}});
+  else d.push({estado:'coincide', k:'Fecha del CV', cv:`${meses} meses`, form:c.busca?`Busca hace ${c.busca==='<1'?'menos de 1 mes':c.busca+' meses'}`:'—', prio:9});
+  // Sin discrepancias → detalle verificable sobre el ítem más reciente
+  if(!d.some(x=>x.q)){
+    const e=cv.empleos?.[0]; const item = e ? `${e.donde}` : (cv.estudia?.que||'lo último que hiciste');
+    d.push({estado:'detalle', k:'Verificación', cv:item, form:'—', prio:6,
+      q:{id:'R-det', tipo:'dinámica', texto:`Contame de ${item}: ¿cómo se llamaba tu encargado, cómo era un día normal y cuál fue el último cliente difícil que atendiste?`, mide:'Consistencia de disponibilidad'}});
+  }
+  return d.sort((a,b)=>a.prio-b.prio);
+}
+function armarPreguntas(c){
+  const din = c.diff.filter(x=>x.q).slice(0,3).map(x=>x.q);
+  const relleno = RELLENO.slice(0, Math.max(0, 3-din.length));
+  return [FIJAS[0], ...din, FIJAS[1], FIJAS[2], ...relleno].slice(0,6);
+}
+
+// ---------- Router ----------
+const views = {};
+function go(v, arg){ location.hash = '#/'+v; render(v, arg); }
+function render(v, arg){ const el=$('#app'); if(!views[v]) v='landing'; el.innerHTML=''; views[v](el, arg); window.scrollTo(0,0); }
+window.addEventListener('hashchange',()=>{ const v=location.hash.replace('#/','')||'landing'; if(['landing','panel'].includes(v)) render(v); });
+
+// ---------- VISTAS DEL CANDIDATO ----------
+views.landing = el => {
+  el.innerHTML = `<div class="wrap">
+    <div class="eyebrow" style="margin-top:34px">Trabajá con nosotros</div>
+    <h1>Vendé zapatillas.<br>Pero primero leé esto.</h1>
+    <p class="muted">Preferimos que te bajes ahora y no a los tres meses. Así es el puesto de verdad.</p>
+    <div class="card"><div class="eyebrow">El puesto</div><div class="cond">
+      <div><span>Horario</span><b>${esc(config.horario)}</b></div>
+      <div><span>Corte</span><b>${esc(config.corte)}</b></div>
+      <div><span>Sucursal</span><b>${esc(config.sucursal)}</b></div>
+      <div><span>Rotación</span><b>${esc(config.rotacion)}</b></div>
+      <div><span>Sueldo</span><b>${esc(config.sueldo)}</b></div>
+    </div><p class="small" style="margin:12px 0 0">${esc(config.extra)}</p></div>
+    <div class="card"><div class="eyebrow">Turnos abiertos hoy</div>
+      ${config.turnos.map(t=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b>${esc(t.nombre)}</b><br><span class="small muted">${esc(t.lugar)}</span></div>`).join('')}
+    </div>
+    <div class="rule"><div class="eyebrow">Antes de empezar</div><p style="margin:0;font-weight:600">${esc(config.compromiso)}</p></div>
+    <p class="small muted">Si buscás un trabajo donde dejás el cuerpo 8 horas y te vas, este no es. Si esto te cierra, seguí.</p>
+    <div class="actions"><button class="btn blue" id="go">Leí todo y quiero postularme</button></div>
+  </div>`;
+  $('#go').onclick=()=>{ cand=newCand(); go('identidad'); };
+};
+
+views.identidad = el => {
+  el.innerHTML = `<div class="wrap">${steps(1,'Identidad')}
+    <h2>Primero, quién sos</h2><p class="muted small">Con esto te identificamos y te escribimos por WhatsApp. No es el inicio todavía.</p>
+    <label>DNI</label><input type="tel" id="dni" inputmode="numeric" placeholder="Sin puntos" maxlength="8">
+    <label>WhatsApp</label><input type="tel" id="wa" placeholder="221 ..." >
+    <div id="otp" style="display:none"><label>Código que te mandamos por WhatsApp</label><input type="tel" id="code" inputmode="numeric" maxlength="4" placeholder="4 dígitos"><div class="help">SIM: cualquier código de 4 dígitos funciona en el prototipo.</div></div>
+    <div class="actions"><button class="btn" id="next">Enviarme el código</button></div></div>`;
+  let sent=false;
+  $('#next').onclick=()=>{
+    const dni=$('#dni').value.replace(/\D/g,''), wa=$('#wa').value.trim();
+    if(dni.length<7||!wa){toast('Completá DNI y WhatsApp');return;}
+    if(!sent){ sent=true; $('#otp').style.display='block'; $('#next').textContent='Verificar y continuar'; $('#code').focus(); return; }
+    if($('#code').value.replace(/\D/g,'').length!==4){toast('Ingresá los 4 dígitos');return;}
+    cand.dni=dni; cand.wa=wa;
+    const b=config.bloqueados.find(x=>x.dni===dni && new Date(x.hasta)>new Date());
+    if(b){ go('bloqueado', b); return; }
+    go('inicio');
+  };
+};
+
+views.bloqueado = (el,b) => { el.innerHTML=`<div class="wrap">${steps(1,'Identidad')}
+  <div class="out"><b>Todavía no podés postularte.</b><p class="small" style="margin:6px 0 0">Una postulación anterior quedó sin terminar. Vas a poder volver a postularte a partir del <b>${esc(b.hasta)}</b>. Si fue un problema técnico, escribinos por WhatsApp y lo revisamos.</p></div>
+  <div class="actions"><button class="btn ghost" onclick="go('landing')">Volver</button></div></div>`; };
+
+views.inicio = el => {
+  el.innerHTML = `<div class="wrap">${steps(1,'Inicio')}
+    <h2>A partir de acá se da por iniciado</h2>
+    <p>Son tres pasos: <b>tus datos</b> (3 minutos), <b>tu CV</b> (1 minuto) y <b>seis preguntas en video</b> de 30 segundos cada una, sin poder regrabar. Igual que en el local: una sola vez.</p>
+    <div class="rule"><div class="eyebrow">Compromiso</div><p style="margin:0;font-weight:600">Tenés 24 horas desde ahora para terminar. Si se te corta internet o la cámara, te mandamos un link por WhatsApp para retomar donde estabas. Si no terminás en 24 horas, quedás fuera por ${config.bloqueoMeses} meses.</p></div>
+    <p class="small muted">Grabamos video y lo transcribimos para evaluar tu postulación. Lo ve solo el equipo de selección y se borra a los 90 días.</p>
+    <div class="actions"><button class="btn blue" id="ok">Entiendo, empezar ahora</button><button class="btn ghost" onclick="go('landing')">Mejor no</button></div></div>`;
+  $('#ok').onclick=()=>{ cand.inicio=new Date(); go('form'); };
+};
+
+views.form = el => {
+  const c=cand;
+  el.innerHTML = `<div class="wrap">${steps(1,'Paso 1 de 3 · Tus datos')}
+    <h2>Tus datos</h2>
+    <label>Nombre y apellido</label><input type="text" id="nombre" value="${esc(c.nombre)}">
+    <label>Fecha de nacimiento</label><input type="date" id="nac" value="${c.nac}">
+    <label>¿Dónde vivís?</label><select id="barrio"><option value="">Elegí</option>${Object.keys(BARRIOS).map(b=>`<option ${c.barrio===b?'selected':''}>${b}</option>`).join('')}</select>
+    <div class="help">Con esto calculamos cuánto tardarías en llegar. No es para descartarte por lejos, es para no ofrecerte un turno de 7 am a 90 minutos.</div>
+
+    <label>Hoy, ¿trabajás o estudiás?</label>
+    <div class="chips" id="sit">${[['trabajo','Trabajo'],['estudio','Estudio'],['ambas','Las dos'],['nada','Ninguna']].map(([v,l])=>`<span class="chip ${c.sit===v?'on':''}" data-v="${v}">${l}</span>`).join('')}</div>
+    <div id="estBlock" style="display:none"><label>¿Qué estudiás y en qué año?</label><input type="text" id="estQue" value="${esc(c.estQue)}" placeholder="Ej: Contador, UNLP, 2º año">
+      <label>¿Qué días cursás?</label><div class="chips" id="estDias">${DIAS.map((d,i)=>`<span class="chip ${c.estDias.has(i)?'on':''}" data-v="${i}">${d}</span>`).join('')}</div>
+      <label>¿En qué horario?</label><div class="chips" id="estHor">${[['m','Mañana'],['t','Tarde'],['n','Noche']].map(([v,l])=>`<span class="chip ${c.estHor===v?'on':''}" data-v="${v}">${l}</span>`).join('')}</div></div>
+    <div id="trabBlock" style="display:none"><label>¿Dónde trabajás?</label><input type="text" id="trabDonde" value="${esc(c.trabDonde)}" placeholder="Lugar y qué hacés">
+      <label>¿Qué días?</label><div class="chips" id="trabDias">${DIAS.map((d,i)=>`<span class="chip ${c.trabDias.has(i)?'on':''}" data-v="${i}">${d}</span>`).join('')}</div>
+      <label>¿En qué horario?</label><div class="chips" id="trabHor">${[['m','Mañana'],['t','Tarde'],['n','Noche']].map(([v,l])=>`<span class="chip ${c.trabHor===v?'on':''}" data-v="${v}">${l}</span>`).join('')}</div></div>
+    <div id="nadaBlock" style="display:none"><label>¿Qué venís haciendo?</label><textarea id="nada">${esc(c.nada)}</textarea></div>
+
+    <h3>¿Qué franjas tenés libres de verdad?</h3>
+    <div class="help" style="margin-bottom:6px">Marcá solo las que podrías trabajar todas las semanas.</div>
+    <div class="grid" id="grilla"><div></div><div class="h">9–13</div><div class="h">16–20</div>
+      ${DIAS.map((d,i)=>`<div class="d">${d}</div><div class="cell ${c.grilla.has(i+'m')?'on':''}" data-v="${i}m">✓</div><div class="cell ${c.grilla.has(i+'t')?'on':''}" data-v="${i}t">✓</div>`).join('')}</div>
+
+    <h3>Estos son los turnos abiertos. ¿Cuáles aceptarías?</h3>
+    <div id="turnos">${config.turnos.map(t=>`<div class="turno ${c.turnos.has(t.id)?'on':''}" data-v="${t.id}"><div class="box"></div><div><b>${esc(t.nombre)}</b><span>${esc(t.lugar)}</span></div></div>`).join('')}</div>
+
+    <label>¿Hace cuánto buscás trabajo?</label>
+    <div class="chips" id="busca">${[['<1','Menos de 1 mes'],['1-3','1 a 3 meses'],['3-6','3 a 6 meses'],['>6','Más de 6 meses']].map(([v,l])=>`<span class="chip ${c.busca===v?'on':''}" data-v="${v}">${l}</span>`).join('')}</div>
+    <div class="actions"><button class="btn" id="next">Seguir con el CV</button></div></div>`;
+
+  const showBlocks=()=>{ $('#estBlock').style.display=(c.sit==='estudio'||c.sit==='ambas')?'block':'none'; $('#trabBlock').style.display=(c.sit==='trabajo'||c.sit==='ambas')?'block':'none'; $('#nadaBlock').style.display=c.sit==='nada'?'block':'none'; };
+  showBlocks();
+  const single=(id,key)=>$('#'+id).onclick=e=>{const ch=e.target.closest('.chip'); if(!ch) return; c[key]=ch.dataset.v; $('#'+id).querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===ch)); if(key==='sit') showBlocks();};
+  const multi=(id,set)=>$('#'+id).onclick=e=>{const ch=e.target.closest('.chip,.cell'); if(!ch) return; const v=ch.dataset.v; const k=isNaN(v)?v:Number(v); set.has(k)?set.delete(k):set.add(k); ch.classList.toggle('on');};
+  single('sit','sit'); single('estHor','estHor'); single('trabHor','trabHor'); single('busca','busca');
+  multi('estDias',c.estDias); multi('trabDias',c.trabDias); multi('grilla',c.grilla);
+  $('#turnos').onclick=e=>{const t=e.target.closest('.turno'); if(!t) return; const v=t.dataset.v; c.turnos.has(v)?c.turnos.delete(v):c.turnos.add(v); t.classList.toggle('on');};
+  $('#next').onclick=()=>{
+    c.nombre=$('#nombre').value.trim(); c.nac=$('#nac').value; c.barrio=$('#barrio').value; c.edad=edadDe(c.nac);
+    c.estQue=$('#estQue').value.trim(); c.trabDonde=$('#trabDonde').value.trim(); c.nada=$('#nada').value.trim();
+    if(!c.nombre||!c.nac||!c.barrio||!c.sit||!c.busca){toast('Faltan datos');return;}
+    if(c.grilla.size===0){toast('Marcá al menos una franja libre');return;}
+    go('cv');
+  };
+};
+
+views.cv = el => {
+  const c=cand;
+  el.innerHTML = `<div class="wrap">${steps(2,'Paso 2 de 3 · Tu CV')}
+    <h2>Tu CV</h2><p class="muted small">Si tenés, subilo. Si no tenés, seguí igual: lo que cargaste recién ya es tu CV.</p>
+    <div class="drop ${c.cvFile?'has':''}" id="drop"><input type="file" id="file" accept=".pdf,image/*" style="display:none"><b id="dropTxt">${c.cvFile?esc(c.cvFile):'Tocá para subir PDF o foto'}</b><div class="small muted">Máximo 5 MB</div></div>
+    <div class="demo"><b>Modo demo</b> · el PDF real se lee con IA en producción. Para probar el motor de cruce, elegí qué "diría" el CV:
+      <select id="cvsel">${Object.entries(CVS).map(([k,v])=>`<option value="${k}" ${c.cvKey===k?'selected':''}>${v?v.label:'Sin CV'}</option>`).join('')}</select></div>
+    <div class="actions"><button class="btn" id="next">Continuar</button></div></div>`;
+  $('#drop').onclick=()=>$('#file').click();
+  $('#file').onchange=e=>{const f=e.target.files[0]; if(f){c.cvFile=f.name; $('#dropTxt').textContent=f.name; $('#drop').classList.add('has');}};
+  $('#cvsel').onchange=e=>c.cvKey=e.target.value;
+  $('#next').onclick=()=>{
+    c.cv=CVS[c.cvKey]; c.reglas=evaluarReglas(c); c.diff=diffCV(c); c.preguntas=armarPreguntas(c);
+    if(c.reglas.some(r=>r.tipo==='rojo')){ c.estado='descartado por reglas'; candidatos.unshift(c); go('fuera'); } else go('camara');
+  };
+};
+
+views.fuera = el => { const r=cand.reglas.filter(x=>x.tipo==='rojo'); el.innerHTML=`<div class="wrap">${steps(2,'Resultado')}
+  <h2>Por ahora no coincidimos</h2>
+  <div class="out"><b>Motivo</b><ul class="small" style="margin:6px 0 0;padding-left:18px">${r.map(x=>`<li><b>${esc(x.k)}:</b> ${esc(x.txt)}</li>`).join('')}</ul></div>
+  <p class="small muted" style="margin-top:14px">Guardamos tus datos por 90 días. Si se abre un turno compatible con tu disponibilidad, te escribimos. Gracias por tu tiempo, en serio.</p>
+  <div class="actions"><button class="btn ghost" onclick="go('landing')">Volver al inicio</button></div></div>`; };
+
+views.camara = el => {
+  el.innerHTML = `<div class="wrap">${steps(3,'Paso 3 de 3 · Video')}
+    <h2>Probemos la cámara</h2>
+    <p class="small muted">Decí tu nombre y desde dónde nos escribís. Esto no se evalúa, es para chequear que se vea y se escuche.</p>
+    <div class="stage"><video id="v" autoplay muted playsinline></video><div class="phase" style="margin-top:12px" id="st">Pidiendo permiso de cámara…</div></div>
+    <div class="actions"><button class="btn blue" id="next" disabled>Se ve y se escucha bien, empezar</button><button class="btn ghost" id="nocam" style="display:none">Seguir sin cámara (solo demo)</button></div></div>`;
+  navigator.mediaDevices?.getUserMedia({video:{facingMode:'user',width:640,height:480},audio:true}).then(s=>{stream=s; $('#v').srcObject=s; $('#st').textContent='Cámara y micrófono listos.'; $('#next').disabled=false;}).catch(()=>{ $('#st').textContent='No pudimos acceder a la cámara. Revisá los permisos del navegador.'; $('#nocam').style.display='flex'; });
+  $('#next').onclick=()=>go('video'); $('#nocam').onclick=()=>{stream=null;go('video');};
+};
+
+views.video = el => {
+  const c=cand; let i=0, rec=null, chunks=[], t=null;
+  const onHide=()=>{ if(document.hidden){ c.tabSwitch++; c.flagsVideo.push({q:c.preguntas[i]?.id, txt:'Salió de la pantalla durante la grabación'}); } };
+  document.addEventListener('visibilitychange', onHide);
+  el.innerHTML = `<div class="wrap">${steps(3,'Paso 3 de 3 · Video')}
+    <div class="stage"><video id="v" autoplay muted playsinline></video>
+      <div class="phase" id="phase"></div><div class="q" id="q"></div>
+      <div class="timer" id="bar"><i id="fill"></i></div>
+      <div class="count"><span id="n"></span><small id="idx"></small></div>
+    </div>
+    <p class="small muted" style="margin-top:12px">Primero tenés 10 segundos para leer. Después se graba 30 segundos y pasa sola a la siguiente. No hay botón de repetir.</p></div>`;
+  if(stream) $('#v').srcObject=stream;
+  const fill=$('#fill');
+  function countdown(sec, cls, cb){
+    $('#bar').className='timer '+cls; let left=sec; const t0=performance.now();
+    $('#n').textContent=String(sec).padStart(2,'0');
+    function tick(){ if(!document.getElementById('n')) return; const e=(performance.now()-t0)/1000; const r=Math.max(0,1-e/sec); fill.style.transform=`scaleX(${r})`; const l=Math.ceil(sec-e); if(l!==left){left=l;$('#n').textContent=String(Math.max(0,l)).padStart(2,'0');} if(e<sec) t=requestAnimationFrame(tick); else cb(); }
+    t=requestAnimationFrame(tick);
+  }
+  function ask(){
+    if(i>=c.preguntas.length){ document.removeEventListener('visibilitychange',onHide); stream?.getTracks().forEach(x=>x.stop()); go('escrito'); return; }
+    const q=c.preguntas[i]; $('#idx').textContent=`Pregunta ${i+1} de ${c.preguntas.length}`;
+    $('#q').textContent=q.texto; $('#phase').textContent='Leé la pregunta';
+    countdown(10,'',()=>{
+      $('#phase').innerHTML='<span class="rec-dot"></span>Grabando · una sola toma';
+      chunks=[];
+      if(stream && window.MediaRecorder){ try{ rec=new MediaRecorder(stream,{mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')?'video/webm;codecs=vp8,opus':''}); rec.ondataavailable=e=>chunks.push(e.data); rec.start(); }catch(e){rec=null;} }
+      countdown(30,'rec',()=>{
+        const done=()=>{ const blob=chunks.length?new Blob(chunks,{type:'video/webm'}):null; c.clips.push({q, url:blob?URL.createObjectURL(blob):null, dur:30}); i++; ask(); };
+        if(rec && rec.state!=='inactive'){ rec.onstop=done; rec.stop(); } else done();
+      });
+    });
+  }
+  ask();
+};
+
+views.escrito = el => {
+  const c=cand; const D=[
+    {k:'q13', t:'Si pudieras elegir, ¿qué preferís?', a:'Ganar $10 por mes + aguinaldo', b:'Ganar $12 por mes, sin aguinaldo'},
+    {k:'q26', t:'Dos personas empiezan el mismo día. Una se esfuerza muchísimo con resultados promedio; la otra se esfuerza menos con resultados excelentes. Si solo podés premiar a una, ¿a cuál?', a:'A la que se esforzó más', b:'A la que obtuvo mejores resultados'},
+    {k:'q23', t:'¿Qué preferís?', a:'Ser el mejor de un equipo que funciona mal', b:'Formar parte de un equipo excelente, aunque no seas el mejor'},
+  ];
+  el.innerHTML = `<div class="wrap">${steps(4,'Último · 3 preguntas escritas')}
+    <h2>Tres preguntas rápidas</h2><p class="muted small">No hay respuesta correcta. Elegí y contanos por qué en una línea.</p>
+    ${D.map(d=>`<div class="card"><p style="font-weight:600">${esc(d.t)}</p><div class="chips" data-k="${d.k}"><span class="chip" data-v="A">${esc(d.a)}</span><span class="chip" data-v="B">${esc(d.b)}</span></div><input type="text" id="w-${d.k}" placeholder="¿Por qué?" style="margin-top:10px"></div>`).join('')}
+    <div class="actions"><button class="btn blue" id="next">Enviar postulación</button><button class="btn ghost" id="skip">Saltar y enviar</button></div></div>`;
+  el.querySelectorAll('.chips').forEach(g=>g.onclick=e=>{const ch=e.target.closest('.chip'); if(!ch) return; g.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===ch)); c.escrito[g.dataset.k]={op:ch.dataset.v};});
+  const fin=()=>{ D.forEach(d=>{ if(c.escrito[d.k]) c.escrito[d.k].por=$('#w-'+d.k).value.trim(); }); c.estado='completo · pendiente de análisis'; c.fin=new Date(); candidatos.unshift(c); go('fin'); };
+  $('#next').onclick=fin; $('#skip').onclick=fin;
+};
+
+views.fin = el => { el.innerHTML=`<div class="wrap">${steps(4,'Listo')}
+  <h2>Recibido, ${esc(cand.nombre.split(' ')[0])}.</h2>
+  <div class="ok"><b>Tu postulación quedó completa.</b><p class="small" style="margin:6px 0 0">Te escribimos por WhatsApp al ${esc(cand.wa)} <b>antes del ${esc(config.fechaRespuesta)}</b>, pases o no. Si no te llega nada para esa fecha, escribinos vos.</p></div>
+  <p class="small muted" style="margin-top:14px">Lo que grabaste lo ve solo el equipo de selección. Se borra a los 90 días.</p>
+  <div class="actions"><button class="btn ghost" onclick="go('landing')">Volver al inicio</button><a class="btn" href="#/panel" style="text-decoration:none">Ver cómo lo ve el dueño (demo)</a></div></div>`; };
+
+// ---------- PANEL DEL DUEÑO ----------
+// SIM: candidatos de ejemplo, ya analizados, para que el panel no arranque vacío.
+const EJEMPLOS = [
+  {id:'C-7K2QA', nombre:'Camila Ferreyra', edad:21, barrio:'Los Hornos', estado:'analizado', score:8, rojo:0, amar:1, fecha:'ayer',
+   mapa:[['Estudia','Contador, 2º año','No estudia','"Dejé en marzo, no me daba el tiempo con el trabajo del kiosco"','ok','Actualizó y explicó'],['Trabaja','Kiosco (vigente en CV)','No trabaja','"Estuve hasta febrero, cerraron el local"','ok','Confirma con detalle'],['Domicilio','Los Hornos','Los Hornos','—','ok','Coincide'],['Turnos','—','T1, T3','V2: martes libre todo el día','warn','Aceptó 3 turnos con grilla incompleta']],
+   rubrica:{Fluidez:2,Consistencia:2,Autocrítica:1,Criterio:2,Honestidad:1}, preguntas:['V1','R-est','R-trab','V4','V5','V6'], escrito:{q13:'A',q26:'B',q23:'B'}},
+  {id:'C-M3XPD', nombre:'Tomás Aguirre', edad:19, barrio:'Tolosa', estado:'analizado', score:4, rojo:2, amar:0, fecha:'ayer',
+   mapa:[['Trabaja','Grido Tolosa (vigente)','No trabaja','"No, ya no… bueno, voy algunos días"','red','Contradice'],['Estudia','—','No estudia','—','ok','Coincide'],['Domicilio','Tolosa','Tolosa','—','ok','Coincide'],['Video','—','—','Salió de la pantalla en la pregunta 2','red','Integridad del video']],
+   rubrica:{Fluidez:1,Consistencia:0,Autocrítica:1,Criterio:1,Honestidad:1}, preguntas:['V1','R-trab','V4','V5','V6','V3'], escrito:{q13:'A',q26:'A',q23:'A'}},
+  {id:'C-Q9WLE', nombre:'Sofía Benítez', edad:23, barrio:'Centro (casco)', estado:'analizado', score:7, rojo:0, amar:0, fecha:'hace 2 días',
+   mapa:[['Estudia','Marketing, UTN, mar y jue 18–22','Estudia, mar y jue, noche','"Martes y jueves curso de 18 a 22, el resto libre"','ok','Confirma con detalle'],['Experiencia','Nike Store, ene 2025–may 2026','—','"Mi encargada era Vanesa, cerrábamos a las 21 los sábados…"','ok','Detalle verificable'],['Domicilio','Centro','Centro','—','ok','Coincide']],
+   rubrica:{Fluidez:2,Consistencia:2,Autocrítica:1,Criterio:1,Honestidad:1}, preguntas:['V1','R-det','V4','V5','V6','V3'], escrito:{q13:'B',q26:'B',q23:'B'}},
+];
+let ptab='cand';
+views.panel = el => {
+  el.className=''; el.innerHTML=`<div class="panel"><nav>
+    <button data-t="cand" class="${ptab==='cand'?'on':''}">Candidatos</button>
+    <button data-t="cond" class="${ptab==='cond'?'on':''}">Condiciones</button>
+    <button data-t="reglas" class="${ptab==='reglas'?'on':''}">Reglas y turnos</button>
+    <button data-t="bloq" class="${ptab==='bloq'?'on':''}">Bloqueados</button>
+    <button data-t="preg" class="${ptab==='preg'?'on':''}">Preguntas</button>
+    <a href="#/" class="btn ghost" style="margin-top:14px;text-decoration:none">Ver la web del candidato</a>
+  </nav><section id="ps"></section></div>`;
+  el.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{ptab=b.dataset.t;render('panel');});
+  ({cand:pCand, cond:pCond, reglas:pReglas, bloq:pBloq, preg:pPreg})[ptab]($('#ps'));
+};
+function pCand(s){
+  const filas=[...candidatos.map(c=>({real:c, id:c.id, nombre:c.nombre, edad:c.edad, barrio:c.barrio, estado:c.estado, score:null, rojo:c.reglas?.filter(r=>r.tipo==='rojo').length||0, amar:(c.reglas?.filter(r=>r.tipo==='amarillo').length||0)+c.diff.filter(d=>['omisión','contradicción','desactualizado'].includes(d.estado)).length, fecha:'recién'})), ...EJEMPLOS];
+  s.innerHTML=`<div class="eyebrow">Convocatoria de septiembre</div><h2>Candidatos <span class="muted" style="font-weight:400">· ${filas.length}</span></h2>
+    <p class="small muted">Ordenados por score de rúbrica. El score ordena, no decide: cada 0 y cada flag tiene su cita textual adentro.</p>
+    <table><thead><tr><th>Candidato</th><th>Edad · zona</th><th>Estado</th><th>Score</th><th>Flags</th><th>Recibido</th></tr></thead><tbody>
+    ${filas.map((f,i)=>`<tr class="click" data-i="${i}"><td><b>${esc(f.nombre||'(sin nombre)')}</b><br><span class="small muted">${f.id}</span></td><td>${f.edad??'—'} · ${esc(f.barrio||'—')}</td><td><span class="pill ${f.estado.startsWith('descartado')?'red':f.estado==='analizado'?'ok':'grey'}">${esc(f.estado)}</span></td><td class="score">${f.score!==null?f.score+'/10':'—'}</td><td>${f.rojo?`<span class="pill red">${f.rojo} rojo</span> `:''}${f.amar?`<span class="pill warn">${f.amar} amarillo</span>`:''}${!f.rojo&&!f.amar?'<span class="pill ok">limpio</span>':''}</td><td class="small muted">${f.fecha}</td></tr>`).join('')}
+    </tbody></table>`;
+  s.querySelectorAll('tr.click').forEach(tr=>tr.onclick=()=>{ const f=filas[tr.dataset.i]; f.real?pDetalleReal(s,f.real):pDetalleEj(s,f); });
+}
+function mapaHTML(rows){ return `<div class="map"><div class="hd">Dato</div><div class="hd">CV</div><div class="hd">Formulario</div><div class="hd">Video</div>${rows.map(r=>`<div class="k">${esc(r[0])}</div><div>${esc(r[1])}</div><div>${esc(r[2])}</div><div class="c-${r[4]}">${esc(r[3])}<br><span class="pill ${r[4]}">${esc(r[5])}</span></div>`).join('')}</div>`; }
+function rubricaHTML(r){ const tot=Object.values(r).reduce((a,b)=>a+b,0); return `<table><thead><tr><th>Dimensión</th><th>0–2</th></tr></thead><tbody>${Object.entries(r).map(([k,v])=>`<tr><td>${k}</td><td class="score">${v}</td></tr>`).join('')}<tr><td><b>Total</b></td><td class="score"><b>${tot}/10</b> ${tot>=6&&!Object.values(r).includes(0)?'<span class="pill ok">pasa a presencial</span>':'<span class="pill red">no pasa</span>'}</td></tr></tbody></table>`; }
+function pDetalleEj(s,f){
+  s.innerHTML=`<button class="btn ghost" style="width:auto;padding:8px 16px;font-size:13px" id="back">← Candidatos</button>
+    <h2 style="margin-top:16px">${esc(f.nombre)} <span class="muted" style="font-weight:400;font-size:16px">${f.edad} · ${esc(f.barrio)}</span></h2>
+    <h3>Mapa de consistencia</h3>${mapaHTML(f.mapa)}
+    <h3>Rúbrica (sobre transcripción)</h3>${rubricaHTML(f.rubrica)}
+    <h3>Preguntas que recibió</h3><ol class="qlist">${f.preguntas.map(id=>{const q=[...FIJAS,...RELLENO].find(x=>x.id===id); return `<li>${q?esc(q.texto):'<i>Repregunta generada por el motor de cruce</i>'} <span class="tag ${id.startsWith('R')?'dyn':''}">${id.startsWith('R')?'dinámica':'fija'}</span></li>`;}).join('')}</ol>
+    <h3>Bloque escrito</h3><p class="small">Q13: ${f.escrito.q13} · Q26: ${f.escrito.q26} · Q23: ${f.escrito.q23} <span class="muted">(se registra, no puntúa hasta validar)</span></p>
+    <div class="actions" style="max-width:420px"><button class="btn blue" onclick="toast('SIM: enviaría WhatsApp con turno de entrevista y pedido de historia laboral ANSES')">Citar a entrevista y pedir documentos</button><button class="btn ghost" onclick="toast('SIM: registraría motivo y cerraría')">Descartar con motivo</button></div>`;
+  $('#back').onclick=()=>render('panel');
+}
+function pDetalleReal(s,c){
+  const rows=c.diff.map(d=>{ const clip=c.clips.find(k=>k.q.id===d.q?.id); const cls=d.estado==='contradicción'?'red':['omisión','desactualizado'].includes(d.estado)?'warn':d.estado==='coincide'?'ok':'grey'; return [d.k,d.cv,d.form, clip?'Clip grabado · pendiente de transcripción':(d.q?'Repregunta asignada':'—'), cls, d.estado]; });
+  s.innerHTML=`<button class="btn ghost" style="width:auto;padding:8px 16px;font-size:13px" id="back">← Candidatos</button>
+    <h2 style="margin-top:16px">${esc(c.nombre||'(sin nombre)')} <span class="muted" style="font-weight:400;font-size:16px">${c.edad??'—'} · ${esc(c.barrio)}</span></h2>
+    <p class="small"><span class="pill grey">${esc(c.estado)}</span> · DNI ${esc(c.dni)} · WhatsApp ${esc(c.wa)} · inició ${c.inicio?c.inicio.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}):'—'}${c.tabSwitch?` · <span class="pill red">salió de pantalla ${c.tabSwitch}×</span>`:''}</p>
+    <h3>Reglas duras</h3>${c.reglas?.length?`<ul class="small">${c.reglas.map(r=>`<li><span class="pill ${r.tipo==='rojo'?'red':'warn'}">${r.tipo}</span> <b>${esc(r.k)}:</b> ${esc(r.txt)}</li>`).join('')}</ul>`:'<p class="small muted">Sin flags de reglas.</p>'}
+    <h3>Mapa de consistencia CV · formulario · video</h3>${mapaHTML(rows)}
+    <h3>Preguntas que recibió</h3><ol class="qlist">${c.preguntas.map(q=>`<li>${esc(q.texto)} <span class="tag ${q.tipo==='dinámica'?'dyn':''}">${q.tipo}</span></li>`).join('')}</ol>
+    ${c.clips.length?`<h3>Clips</h3><div class="clips">${c.clips.map((k,i)=>`<div>${k.url?`<video src="${k.url}" controls playsinline></video>`:'<div style="aspect-ratio:4/3;background:var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center" class="small muted">sin cámara (demo)</div>'}<p><b>${i+1}.</b> ${esc(k.q.texto.slice(0,70))}…</p></div>`).join('')}</div>`:''}
+    <h3>Rúbrica</h3><p class="small muted">Pendiente. SIM: transcripción (whisper) → puntuación 0–2 por dimensión con cita textual. Ver HANDOFF.md.</p>
+    <h3>Bloque escrito</h3><p class="small">${Object.keys(c.escrito).length?Object.entries(c.escrito).map(([k,v])=>`${k.toUpperCase()}: ${v.op}${v.por?` («${esc(v.por)}»)`:''}`).join(' · '):'Saltado'}</p>`;
+  $('#back').onclick=()=>render('panel');
+}
+function pCond(s){
+  s.innerHTML=`<div class="eyebrow">Lo que ve el candidato en la landing</div><h2>Condiciones del puesto</h2><div class="cfg">
+    ${[['puesto','Puesto'],['horario','Horario'],['corte','Corte'],['sucursal','Sucursal'],['rotacion','Rotación'],['sueldo','Sueldo'],['extra','Lo bueno (una línea)'],['fechaRespuesta','Fecha límite de respuesta al candidato']].map(([k,l])=>`<label>${l}</label><input type="text" data-k="${k}" value="${esc(config[k])}">`).join('')}
+    <label>Texto del compromiso</label><textarea data-k="compromiso">${esc(config.compromiso)}</textarea>
+    <div class="actions" style="max-width:320px"><button class="btn" id="save">Guardar y publicar</button></div></div>`;
+  $('#save').onclick=()=>{ s.querySelectorAll('[data-k]').forEach(i=>config[i.dataset.k]=i.value); toast('Publicado en la landing'); };
+}
+function pReglas(s){
+  s.innerHTML=`<div class="eyebrow">Corte automático</div><h2>Reglas y turnos</h2><div class="cfg"><div class="two">
+    <div><label>Edad mínima</label><input type="number" id="edad" value="${config.edadMin}"></div>
+    <div><label>Viaje máximo (minutos)</label><input type="number" id="viaje" value="${config.viajeMax}"></div>
+    <div><label>Bloqueo por abandono (meses)</label><input type="number" id="bloq" value="${config.bloqueoMeses}"></div></div>
+    <h3>Turnos abiertos (se muestran en la landing y en el formulario)</h3>
+    ${config.turnos.map((t,i)=>`<div class="card"><label style="margin-top:0">Turno ${t.id}</label><input type="text" data-t="${i}" data-f="nombre" value="${esc(t.nombre)}"><label>Sucursal</label><input type="text" data-t="${i}" data-f="lugar" value="${esc(t.lugar)}"><div class="help">Días: ${t.dias.map(d=>DIAS[d]).join(', ')} · franjas: ${t.franjas.map(f=>f==='m'?'9–13':'16–20').join(' y ')}</div></div>`).join('')}
+    <div class="actions" style="max-width:320px"><button class="btn" id="save">Guardar</button></div></div>`;
+  $('#save').onclick=()=>{ config.edadMin=+$('#edad').value; config.viajeMax=+$('#viaje').value; config.bloqueoMeses=+$('#bloq').value; s.querySelectorAll('[data-t]').forEach(i=>config.turnos[+i.dataset.t][i.dataset.f]=i.value); toast('Reglas guardadas'); };
+}
+function pBloq(s){
+  s.innerHTML=`<div class="eyebrow">Abandonos</div><h2>Bloqueados</h2><p class="small muted">Se bloquean solos a las 24 h de un inicio sin terminar. Acá se levantan a mano cuando fue un problema técnico.</p>
+    <table><thead><tr><th>DNI</th><th>Hasta</th><th>Motivo</th><th></th></tr></thead><tbody>${config.bloqueados.map((b,i)=>`<tr><td>${esc(b.dni)}</td><td>${esc(b.hasta)}</td><td>${esc(b.motivo)}</td><td><button class="btn ghost" style="padding:6px 12px;font-size:13px;width:auto" data-i="${i}">Levantar bloqueo</button></td></tr>`).join('')||'<tr><td colspan="4" class="muted">Nadie bloqueado.</td></tr>'}</tbody></table>
+    <div class="help" style="margin-top:12px">Probalo: en la web del candidato, ingresá el DNI 11111111.</div>`;
+  s.querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>{config.bloqueados.splice(+b.dataset.i,1);toast('Bloqueo levantado');pBloq(s);});
+}
+function pPreg(s){
+  s.innerHTML=`<div class="eyebrow">Banco</div><h2>Preguntas del video</h2>
+    <h3>Fijas (todos las reciben)</h3><ol class="qlist">${[...FIJAS,...RELLENO].map(q=>`<li>${esc(q.texto)} <span class="tag">${esc(q.mide)}</span></li>`).join('')}</ol>
+    <h3>Repreguntas dinámicas (las arma el motor según el cruce CV vs formulario)</h3>
+    <table><thead><tr><th>Cuando</th><th>Pregunta</th></tr></thead><tbody>
+      <tr><td>CV dice que estudia, formulario no</td><td>En tu CV figura que estudiabas X. ¿Qué pasó con eso? ¿Cuándo dejaste y por qué?</td></tr>
+      <tr><td>Formulario dice que estudia, CV no</td><td>Nos contaste que estudiás X pero en el CV no aparece. ¿Desde cuándo? ¿Qué días y horario cursás?</td></tr>
+      <tr><td>CV tiene trabajo vigente, formulario no</td><td>En el CV aparece X como trabajo actual. ¿Seguís ahí? Si no, ¿hasta cuándo y por qué terminó?</td></tr>
+      <tr><td>Formulario dice que trabaja, CV no</td><td>Nos contaste que trabajás en X pero no está en el CV. ¿Desde cuándo, qué días y horario?</td></tr>
+      <tr><td>Domicilios distintos</td><td>El CV dice X y acá pusiste Y. ¿Desde dónde viajarías y cuánto tardás?</td></tr>
+      <tr><td>CV de más de 6 meses y "busca hace menos de 1 mes"</td><td>Tu CV tiene más de seis meses. ¿Qué cambió en tu vida desde que lo armaste?</td></tr>
+      <tr><td>Sin discrepancias</td><td>Contame de X: ¿cómo se llamaba tu encargado, cómo era un día normal y cuál fue el último cliente difícil?</td></tr>
+      <tr><td>Sin CV</td><td>Contame lo último que hiciste, con lugar y fechas.</td></tr>
+    </tbody></table>
+    <p class="small muted" style="margin-top:12px">Máximo 3 dinámicas por candidato, priorizadas por impacto en disponibilidad. Rotación de variantes: pendiente (HANDOFF.md).</p>`;
+}
+
+// ---------- Arranque ----------
+render(location.hash.replace('#/','')||'landing');
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+flowchart TD
+    subgraph PANEL["PANEL DEL DUEÑO"]
+        P1[Condiciones del puesto<br/>horario, sucursales, sueldo, rotación]
+        P2[Turnos abiertos<br/>3 combinaciones reales]
+        P3[Reglas<br/>edad, distancia, compromiso 6 meses, cortes]
+        P4[Banco de preguntas fijas<br/>+ plantillas de repreguntas]
+    end
+
+    subgraph CANDIDATO["FLUJO DEL CANDIDATO · 10 min"]
+        L[Landing<br/>condiciones + regla de compromiso<br/>leídas del panel]
+        L -->|"Quiero postularme"| ID[Identidad<br/>DNI + WhatsApp verificado]
+        ID --> BLK{¿Bloqueado?<br/>abandono previo < 6 meses}
+        BLK -->|Sí| OUT1[Mensaje: podrás postularte<br/>a partir de fecha X]
+        BLK -->|No| START[Se da por INICIADO<br/>arranca el reloj de 24 h]
+        START --> F[Formulario<br/>estudia/trabaja + días y horarios<br/>grilla · turnos · hace cuánto busca]
+        F --> CV[Subir CV<br/>opcional]
+        CV --> RULES{Reglas duras<br/>edad · distancia · disponibilidad}
+        RULES -->|Rojo| OUT2[Mensaje honesto inmediato<br/>no coincidimos en turnos]
+        RULES -->|Pasa| CAM[Prueba de cámara 15 s]
+        CAM --> VID[Video · toma única<br/>10 s lectura + 30 s grabación<br/>3 fijas + hasta 3 repreguntas]
+        VID --> W[Bloque escrito opcional<br/>3 dilemas]
+        W --> END[Cierre<br/>Recibido. Te escribimos por WhatsApp<br/>antes del día X]
+    end
+
+    subgraph MOTOR["MOTOR DE CRUCE · corre entre CV y VIDEO"]
+        X1[Extracción del CV<br/>a esquema fijo]
+        X2[Diff campo por campo<br/>CV vs formulario]
+        X2 --> S1[Coincide]
+        X2 --> S2[Desactualizado<br/>form tiene algo más nuevo]
+        X2 --> S3[Omisión<br/>una fuente calla lo que la otra dice]
+        X2 --> S4[Contradicción<br/>afirmaciones incompatibles]
+        S2 --> RQ[Generador de repreguntas<br/>máx. 3, priorizadas por<br/>impacto en disponibilidad]
+        S3 --> RQ
+        S4 --> RQ
+        S1 --> RQ2[Sin discrepancias:<br/>repregunta de detalle verificable<br/>sobre el ítem más reciente]
+    end
+
+    subgraph ANALISIS["ANÁLISIS POST-VIDEO"]
+        T[Transcripción]
+        T --> C[Clasificación por repregunta<br/>confirma con detalle · actualiza y explica<br/>evade o vago · contradice]
+        T --> R[Rúbrica 0-1-2<br/>fluidez · consistencia · autocrítica<br/>criterio · honestidad]
+        C --> D[Dashboard<br/>mapa de consistencia por candidato<br/>CV | formulario | video<br/>flags con cita textual + clips]
+        R --> D
+    end
+
+    P1 --> L
+    P2 --> F
+    P3 --> RULES
+    P3 --> BLK
+    P4 --> RQ
+    CV --> X1
+    F --> X2
+    X1 --> X2
+    RQ --> VID
+    RQ2 --> VID
+    VID --> T
+    D --> H[Decide el humano<br/>cita a entrevista presencial<br/>pide ANSES / constancia / referencia]
+
+    TO[Abandono técnico<br/>cámara falla, sin datos] -.->|link por WhatsApp<br/>retomar en 24 h| VID
+    VID -.->|no completa en 24 h| BLOCK[Bloqueo automático 6 meses<br/>levantable desde el panel]

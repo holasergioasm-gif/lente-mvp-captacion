@@ -149,6 +149,9 @@
 // DEMO: en true, nadie queda descartado por reglas rojas; las reglas se calculan igual y se ven en el panel.
 // Poner en false para reponer el corte real. (Pedido del 25/8: recorrer hasta la cámara sin rechazo.)
 const SIN_FILTRO = true;
+// DEMO: en true, se puede avanzar por todas las pantallas sin llenar ningún dato (usa valores de relleno),
+// aparece "Seguir sin cámara" siempre y un botón para saltar cada video. Poner en false para la versión real.
+const SIN_VALIDACION = true;
 
 // ---------- Configuración (lo que el dueño edita desde el panel) ----------
 const config = {
@@ -326,10 +329,10 @@ views.identidad = el => {
   let sent=false;
   $('#next').onclick=()=>{
     const dni=$('#dni').value.replace(/\D/g,''), wa=$('#wa').value.trim();
-    if(dni.length<7||!wa){toast('Completá DNI y WhatsApp');return;}
+    if(!SIN_VALIDACION && (dni.length<7||!wa)){toast('Completá DNI y WhatsApp');return;}
     if(!sent){ sent=true; $('#otp').style.display='block'; $('#next').textContent='Verificar y continuar'; $('#code').focus(); return; }
-    if($('#code').value.replace(/\D/g,'').length!==4){toast('Ingresá los 4 dígitos');return;}
-    cand.dni=dni; cand.wa=wa;
+    if(!SIN_VALIDACION && $('#code').value.replace(/\D/g,'').length!==4){toast('Ingresá los 4 dígitos');return;}
+    cand.dni=dni||'12345678'; cand.wa=wa||'221 000-0000';
     const b=config.bloqueados.find(x=>x.dni===dni && new Date(x.hasta)>new Date());
     if(b){ go('bloqueado', b); return; }
     go('inicio');
@@ -390,8 +393,10 @@ views.form = el => {
   $('#next').onclick=()=>{
     c.nombre=$('#nombre').value.trim(); c.nac=$('#nac').value; c.barrio=$('#barrio').value; c.edad=edadDe(c.nac);
     c.estQue=$('#estQue').value.trim(); c.trabDonde=$('#trabDonde').value.trim(); c.nada=$('#nada').value.trim();
-    if(!c.nombre||!c.nac||!c.barrio||!c.sit||!c.busca){toast('Faltan datos');return;}
-    if(c.grilla.size===0){toast('Marcá al menos una franja libre');return;}
+    if(!SIN_VALIDACION){
+      if(!c.nombre||!c.nac||!c.barrio||!c.sit||!c.busca){toast('Faltan datos');return;}
+      if(c.grilla.size===0){toast('Marcá al menos una franja libre');return;}
+    }
     go('camara');
   };
 };
@@ -424,7 +429,7 @@ views.camara = el => {
     <h2>Probemos la cámara</h2>
     <p class="small muted">Contanos: ¿cómo te llamás? ¿en dónde vivís? Esta parte es solo para probar micrófono y cámara, no se evalúa.</p>
     <div class="stage"><video id="v" autoplay muted playsinline></video><div class="phase" style="margin-top:12px" id="st">Pidiendo permiso de cámara…</div></div>
-    <div class="actions"><button class="btn blue" id="next" disabled>Se ve y se escucha bien, seguir</button><button class="btn ghost" id="nocam" style="display:none">Seguir sin cámara (solo demo)</button></div></div>`;
+    <div class="actions"><button class="btn blue" id="next" disabled>Se ve y se escucha bien, seguir</button><button class="btn ghost" id="nocam" style="display:${SIN_VALIDACION?'flex':'none'}">Seguir sin cámara (solo demo)</button></div></div>`;
   navigator.mediaDevices?.getUserMedia({video:{facingMode:'user',width:640,height:480},audio:true}).then(s=>{stream=s; $('#v').srcObject=s; $('#st').textContent='Cámara y micrófono listos.'; $('#next').disabled=false;}).catch(()=>{ $('#st').textContent='No pudimos acceder a la cámara. Revisá los permisos del navegador.'; $('#nocam').style.display='flex'; });
   $('#next').onclick=()=>go('cv'); $('#nocam').onclick=()=>{stream=null;go('cv');};
 };
@@ -458,19 +463,22 @@ views.video = el => {
 
   function video(q){
     const vn = seq.slice(0,idx+1).filter(x=>x.tipo==='v').length;
+    let vivo=true;
     el.innerHTML = `<div class="wrap">${steps(4,'La entrevista · video')}
       <div class="stage"><video id="v" autoplay muted playsinline></video>
         <div class="phase" id="phase"></div><div class="q" id="q"></div>
         <div class="timer" id="bar"><i id="fill"></i></div>
         <div class="count"><span id="n"></span><small id="idx"></small></div>
       </div>
-      <p class="small muted" style="margin-top:12px">10 segundos para leer + 30 para grabar. ¡Vamos!</p></div>`;
+      <p class="small muted" style="margin-top:12px">10 segundos para leer + 30 para grabar. ¡Vamos!</p>
+      ${SIN_VALIDACION?`<div class="actions" style="margin-top:8px"><button class="btn ghost" id="skipv">Saltar pregunta (solo demo)</button></div>`:''}</div>`;
     if(stream) $('#v').srcObject=stream;
+    if(SIN_VALIDACION) $('#skipv').onclick=()=>{ vivo=false; try{ if(rec&&rec.state!=='inactive'){ rec.onstop=null; rec.stop(); } }catch(e){} c.clips.push({q, url:null, dur:0}); siguiente(); };
     const fill=$('#fill');
     function countdown(sec, cls, cb){
       $('#bar').className='timer '+cls; let left=sec; const t0=performance.now();
       $('#n').textContent=String(sec).padStart(2,'0');
-      function tick(){ if(!document.getElementById('n')) return; const e=(performance.now()-t0)/1000; const r=Math.max(0,1-e/sec); fill.style.transform=`scaleX(${r})`; const l=Math.ceil(sec-e); if(l!==left){left=l;$('#n').textContent=String(Math.max(0,l)).padStart(2,'0');} if(e<sec) t=requestAnimationFrame(tick); else cb(); }
+      function tick(){ if(!vivo||!document.getElementById('n')) return; const e=(performance.now()-t0)/1000; const r=Math.max(0,1-e/sec); fill.style.transform=`scaleX(${r})`; const l=Math.ceil(sec-e); if(l!==left){left=l;$('#n').textContent=String(Math.max(0,l)).padStart(2,'0');} if(e<sec) t=requestAnimationFrame(tick); else cb(); }
       t=requestAnimationFrame(tick);
     }
     $('#idx').textContent=`Video ${vn} de ${vtot}`;
@@ -489,7 +497,7 @@ views.video = el => {
 };
 
 views.fin = el => { el.innerHTML=`<div class="wrap">${steps(4,'Listo')}
-  <h2>¡Gracias, ${esc(cand.nombre.split(' ')[0])}!</h2>
+  <h2>¡Gracias${cand.nombre?', '+esc(cand.nombre.split(' ')[0]):''}!</h2>
   <div class="ok"><b>Tu postulación quedó completa.</b><p class="small" style="margin:6px 0 0">Nos comunicamos con vos por WhatsApp al ${esc(cand.wa)} <b>dentro de los próximos 5 días</b> para contarte si avanzaste en el proceso. ¡Gracias por tu tiempo!</p></div>
   <p class="small muted" style="margin-top:14px">Lo que grabaste lo ve solo el equipo de selección. Se borra a los 90 días.</p>
   <div class="actions"><button class="btn ghost" onclick="go('landing')">Volver al inicio</button><a class="btn" href="#/panel" style="text-decoration:none">Ver cómo lo ve el dueño (demo)</a></div></div>`; };

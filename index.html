@@ -204,7 +204,7 @@ const CVS = {
 
 // Preguntas fijas del video
 const FIJAS = [
-  {id:'V1', tipo:'fija', texto:'Tenés 30 segundos y no te voy a interrumpir. Contame algo tuyo que no esté en ningún CV.', mide:'Fluidez con desconocidos'},
+  {id:'V1', tipo:'fija', texto:'Contame algo tuyo que no esté en ningún CV.', mide:'Fluidez con desconocidos'},
   {id:'V4', tipo:'fija', texto:'Son las 19:50 y el local cierra a las 20. Entra un cliente que quiere ver varios pares antes de decidir. ¿Qué hacés y cómo lo encarás?', mide:'Criterio en situaciones'},
   {id:'V5', tipo:'fija', texto:'Un cliente está molesto y te habla mal por un problema que vos no generaste. ¿Cómo actuás?', mide:'Criterio en situaciones'},
 ];
@@ -497,7 +497,7 @@ views.video = el => {
     countdown(10,'',()=>{
       // FASE 2 · preparación (5 s con cuenta regresiva 3, 2, 1)
       $('#phase').textContent='¿Estás listo?';
-      $('#q').textContent='Ahora sí: vas a tener 30 segundos para responder.';
+      $('#q').textContent='Ahora sí: tenés 30 segundos para responder. No te vamos a interrumpir.';
       $('#pie').textContent='Respirá hondo. Arrancamos enseguida…';
       countdown(5,'',()=>{
         // FASE 3 · responder (30 s, una sola toma)

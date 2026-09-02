@@ -109,6 +109,10 @@
   tr.click{cursor:pointer} tr.click:hover td{background:var(--surface)}
   .pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:999px;font-weight:600}
   .pill.red{background:var(--red-tint);color:var(--red)} .pill.warn{background:var(--warn-tint);color:var(--warn)} .pill.ok{background:#eaf7ee;color:var(--ok)} .pill.grey{background:var(--line);color:var(--ink-2)}
+  .filtros{display:flex;flex-wrap:wrap;gap:16px;margin:14px 0 18px;align-items:flex-start}
+  .filtros .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:6px}
+  .filtros .chip{padding:7px 12px;font-size:13px}
+  .filtros select{width:auto;padding:8px 10px;font-size:13px}
   .score{font-family:var(--mono);font-weight:600}
   .map{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr;font-size:13px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
   .map div{padding:10px 12px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
@@ -154,11 +158,11 @@ const config = {
   sucursal: 'Sucursal rotativa entre locales de La Plata y alrededores',
   rotacion: 'Horario rotativo, incluye sábados',
   sueldo: 'Sueldo de convenio de comercio + comisiones por venta',
-  extra: 'Capacitación paga desde el primer día. El 95% de nuestra gente entró sin experiencia.',
+  extra: 'Capacitación incluida y paga. Podés postularte con o sin experiencia en ventas.',
   edadMin: 18,
   viajeMax: 60,
   bloqueoMeses: 6,
-  compromiso: 'Si empezás la postulación tenés que terminarla en la misma sesión. Dura 10 minutos, necesitás cámara y micrófono. Si la dejás a la mitad, no vas a poder postularte de nuevo por 6 meses.',
+  compromiso: 'La entrevista dura menos de 10 minutos y se completa en una sola sesión. Vas a necesitar cámara y micrófono: buscate un momento tranquilo y con buena luz. Nosotros te acompañamos en cada paso.',
   fechaRespuesta: 'viernes 4 de septiembre',
   turnos: [
     {id:'T1', nombre:'Lunes a viernes, 9–13 y 16–20', lugar:'Sucursal Centro', dias:[0,1,2,3,4], franjas:['m','t']},
@@ -293,8 +297,8 @@ window.addEventListener('hashchange',()=>{ const v=location.hash.replace('#/',''
 views.landing = el => {
   el.innerHTML = `<div class="wrap">
     <div class="eyebrow" style="margin-top:34px">Trabajá con nosotros</div>
-    <h1>Vendé zapatillas.<br>Pero primero leé esto.</h1>
-    <p class="muted">Preferimos que te bajes ahora y no a los tres meses. Así es el puesto de verdad.</p>
+    <h1>Vendé zapatillas.<br>Sumate a Lente.</h1>
+    <p class="muted">¡Te contamos la posta!</p>
     <div class="card"><div class="eyebrow">El puesto</div><div class="cond">
       <div><span>Horario</span><b>${esc(config.horario)}</b></div>
       <div><span>Corte</span><b>${esc(config.corte)}</b></div>
@@ -306,7 +310,7 @@ views.landing = el => {
       ${config.turnos.map(t=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b>${esc(t.nombre)}</b><br><span class="small muted">${esc(t.lugar)}</span></div>`).join('')}
     </div>
     <div class="rule"><div class="eyebrow">Antes de empezar</div><p style="margin:0;font-weight:600">${esc(config.compromiso)}</p></div>
-    <p class="small muted">Si buscás un trabajo donde dejás el cuerpo 8 horas y te vas, este no es. Si esto te cierra, seguí.</p>
+    <p class="small muted">Si sentís que este trabajo es para vos… ¡comencemos!</p>
     <div class="actions"><button class="btn blue" id="go">Leí todo y quiero postularme</button></div>
   </div>`;
   $('#go').onclick=()=>{ cand=newCand(); go('identidad'); };
@@ -338,22 +342,21 @@ views.bloqueado = (el,b) => { el.innerHTML=`<div class="wrap">${steps(1,'Identid
 
 views.inicio = el => {
   el.innerHTML = `<div class="wrap">${steps(1,'Inicio')}
-    <h2>A partir de acá se da por iniciado</h2>
-    <p>Son tres pasos: <b>tus datos</b> (3 minutos), <b>tu CV</b> (1 minuto) y <b>seis preguntas en video</b> de 30 segundos cada una, sin poder regrabar. Igual que en el local: una sola vez.</p>
-    <div class="rule"><div class="eyebrow">Compromiso</div><p style="margin:0;font-weight:600">Tenés 24 horas desde ahora para terminar. Si se te corta internet o la cámara, te mandamos un link por WhatsApp para retomar donde estabas. Si no terminás en 24 horas, quedás fuera por ${config.bloqueoMeses} meses.</p></div>
+    <h2>Queremos saber más de vos</h2>
+    <p>Te va a llevar menos de 10 minutos: <b>1.</b> completás tus datos, <b>2.</b> probás la cámara, <b>3.</b> subís tu CV y respondés <b>seis preguntas rápidas en video</b>. ¡Acordate que solo podés grabarlas una vez!</p>
+    <div class="rule"><div class="eyebrow">Atención</div><p style="margin:0;font-weight:600">¡Comienza a correr el tiempo! Tenés 24 horas para completar la entrevista. Pero no te preocupes: si se te corta internet o tenés un problema técnico, te reenviamos el link por WhatsApp para que retomes donde estabas.</p></div>
     <p class="small muted">Grabamos video y lo transcribimos para evaluar tu postulación. Lo ve solo el equipo de selección y se borra a los 90 días.</p>
-    <div class="actions"><button class="btn blue" id="ok">Entiendo, empezar ahora</button><button class="btn ghost" onclick="go('landing')">Mejor no</button></div></div>`;
+    <div class="actions"><button class="btn blue" id="ok">¡Empecemos!</button><button class="btn ghost" onclick="go('landing')">Prefiero otro momento</button></div></div>`;
   $('#ok').onclick=()=>{ cand.inicio=new Date(); go('form'); };
 };
 
 views.form = el => {
   const c=cand;
-  el.innerHTML = `<div class="wrap">${steps(1,'Paso 1 de 3 · Tus datos')}
+  el.innerHTML = `<div class="wrap">${steps(1,'Paso 1 de 4 · Tus datos')}
     <h2>Tus datos</h2>
     <label>Nombre y apellido</label><input type="text" id="nombre" value="${esc(c.nombre)}">
     <label>Fecha de nacimiento</label><input type="date" id="nac" value="${c.nac}">
     <label>¿Dónde vivís?</label><select id="barrio"><option value="">Elegí</option>${Object.keys(BARRIOS).map(b=>`<option ${c.barrio===b?'selected':''}>${b}</option>`).join('')}</select>
-    <div class="help">Con esto calculamos cuánto tardarías en llegar. No es para descartarte por lejos, es para no ofrecerte un turno de 7 am a 90 minutos.</div>
 
     <label>Hoy, ¿trabajás o estudiás?</label>
     <div class="chips" id="sit">${[['trabajo','Trabajo'],['estudio','Estudio'],['ambas','Las dos'],['nada','Ninguna']].map(([v,l])=>`<span class="chip ${c.sit===v?'on':''}" data-v="${v}">${l}</span>`).join('')}</div>
@@ -375,7 +378,7 @@ views.form = el => {
 
     <label>¿Hace cuánto buscás trabajo?</label>
     <div class="chips" id="busca">${[['<1','Menos de 1 mes'],['1-3','1 a 3 meses'],['3-6','3 a 6 meses'],['>6','Más de 6 meses']].map(([v,l])=>`<span class="chip ${c.busca===v?'on':''}" data-v="${v}">${l}</span>`).join('')}</div>
-    <div class="actions"><button class="btn" id="next">Seguir con el CV</button></div></div>`;
+    <div class="actions"><button class="btn" id="next">Seguir</button></div></div>`;
 
   const showBlocks=()=>{ $('#estBlock').style.display=(c.sit==='estudio'||c.sit==='ambas')?'block':'none'; $('#trabBlock').style.display=(c.sit==='trabajo'||c.sit==='ambas')?'block':'none'; $('#nadaBlock').style.display=c.sit==='nada'?'block':'none'; };
   showBlocks();
@@ -389,24 +392,24 @@ views.form = el => {
     c.estQue=$('#estQue').value.trim(); c.trabDonde=$('#trabDonde').value.trim(); c.nada=$('#nada').value.trim();
     if(!c.nombre||!c.nac||!c.barrio||!c.sit||!c.busca){toast('Faltan datos');return;}
     if(c.grilla.size===0){toast('Marcá al menos una franja libre');return;}
-    go('cv');
+    go('camara');
   };
 };
 
 views.cv = el => {
   const c=cand;
-  el.innerHTML = `<div class="wrap">${steps(2,'Paso 2 de 3 · Tu CV')}
+  el.innerHTML = `<div class="wrap">${steps(3,'Paso 3 de 4 · Tu CV')}
     <h2>Tu CV</h2><p class="muted small">Si tenés, subilo. Si no tenés, seguí igual: lo que cargaste recién ya es tu CV.</p>
     <div class="drop ${c.cvFile?'has':''}" id="drop"><input type="file" id="file" accept=".pdf,image/*" style="display:none"><b id="dropTxt">${c.cvFile?esc(c.cvFile):'Tocá para subir PDF o foto'}</b><div class="small muted">Máximo 5 MB</div></div>
     <div class="demo"><b>Modo demo</b> · el PDF real se lee con IA en producción. Para probar el motor de cruce, elegí qué "diría" el CV:
       <select id="cvsel">${Object.entries(CVS).map(([k,v])=>`<option value="${k}" ${c.cvKey===k?'selected':''}>${v?v.label:'Sin CV'}</option>`).join('')}</select></div>
-    <div class="actions"><button class="btn" id="next">Continuar</button></div></div>`;
+    <div class="actions"><button class="btn" id="next">Seguir a la entrevista</button></div></div>`;
   $('#drop').onclick=()=>$('#file').click();
   $('#file').onchange=e=>{const f=e.target.files[0]; if(f){c.cvFile=f.name; $('#dropTxt').textContent=f.name; $('#drop').classList.add('has');}};
   $('#cvsel').onchange=e=>c.cvKey=e.target.value;
   $('#next').onclick=()=>{
     c.cv=CVS[c.cvKey]; c.reglas=evaluarReglas(c); c.diff=diffCV(c); c.preguntas=armarPreguntas(c);
-    if(!SIN_FILTRO && c.reglas.some(r=>r.tipo==='rojo')){ c.estado='descartado por reglas'; candidatos.unshift(c); go('fuera'); } else go('camara');
+    if(!SIN_FILTRO && c.reglas.some(r=>r.tipo==='rojo')){ c.estado='descartado por reglas'; candidatos.unshift(c); go('fuera'); } else go('video');
   };
 };
 
@@ -417,86 +420,94 @@ views.fuera = el => { const r=cand.reglas.filter(x=>x.tipo==='rojo'); el.innerHT
   <div class="actions"><button class="btn ghost" onclick="go('landing')">Volver al inicio</button></div></div>`; };
 
 views.camara = el => {
-  el.innerHTML = `<div class="wrap">${steps(3,'Paso 3 de 3 · Video')}
+  el.innerHTML = `<div class="wrap">${steps(2,'Paso 2 de 4 · Video 1 · probamos cámara')}
     <h2>Probemos la cámara</h2>
-    <p class="small muted">Decí tu nombre y desde dónde nos escribís. Esto no se evalúa, es para chequear que se vea y se escuche.</p>
+    <p class="small muted">Contanos: ¿cómo te llamás? ¿en dónde vivís? Esta parte es solo para probar micrófono y cámara, no se evalúa.</p>
     <div class="stage"><video id="v" autoplay muted playsinline></video><div class="phase" style="margin-top:12px" id="st">Pidiendo permiso de cámara…</div></div>
-    <div class="actions"><button class="btn blue" id="next" disabled>Se ve y se escucha bien, empezar</button><button class="btn ghost" id="nocam" style="display:none">Seguir sin cámara (solo demo)</button></div></div>`;
+    <div class="actions"><button class="btn blue" id="next" disabled>Se ve y se escucha bien, seguir</button><button class="btn ghost" id="nocam" style="display:none">Seguir sin cámara (solo demo)</button></div></div>`;
   navigator.mediaDevices?.getUserMedia({video:{facingMode:'user',width:640,height:480},audio:true}).then(s=>{stream=s; $('#v').srcObject=s; $('#st').textContent='Cámara y micrófono listos.'; $('#next').disabled=false;}).catch(()=>{ $('#st').textContent='No pudimos acceder a la cámara. Revisá los permisos del navegador.'; $('#nocam').style.display='flex'; });
-  $('#next').onclick=()=>go('video'); $('#nocam').onclick=()=>{stream=null;go('video');};
+  $('#next').onclick=()=>go('cv'); $('#nocam').onclick=()=>{stream=null;go('cv');};
 };
 
+// Preguntas escritas: se intercalan de a una entre los videos para que la entrevista sea más amena.
+const ESCRITAS = [
+  {k:'q13', t:'Si pudieras elegir, ¿qué preferís?', a:'Ganar $10 por mes + aguinaldo', b:'Ganar $12 por mes, sin aguinaldo'},
+  {k:'q26', t:'Dos personas empiezan el mismo día. Una se esfuerza muchísimo con resultados promedio; la otra se esfuerza menos con resultados excelentes. Si solo podés premiar a una, ¿a cuál?', a:'A la que se esforzó más', b:'A la que obtuvo mejores resultados'},
+  {k:'q23', t:'¿Qué preferís?', a:'Ser el mejor de un equipo que funciona mal', b:'Formar parte de un equipo excelente, aunque no seas el mejor'},
+];
+
 views.video = el => {
-  const c=cand; let i=0, rec=null, chunks=[], t=null;
-  const onHide=()=>{ if(document.hidden){ c.tabSwitch++; c.flagsVideo.push({q:c.preguntas[i]?.id, txt:'Salió de la pantalla durante la grabación'}); } };
+  const c=cand; let idx=0, rec=null, chunks=[], t=null;
+  // Secuencia intercalada: video, escrita, video, escrita… hasta agotar las escritas, después siguen los videos.
+  const seq=[]; c.preguntas.forEach((q,i)=>{ seq.push({tipo:'v', q}); if(ESCRITAS[i]) seq.push({tipo:'e', d:ESCRITAS[i]}); });
+  const vtot=c.preguntas.length;
+  const onHide=()=>{ if(document.hidden && seq[idx]?.tipo==='v'){ c.tabSwitch++; c.flagsVideo.push({q:seq[idx].q.id, txt:'Salió de la pantalla durante la grabación'}); } };
   document.addEventListener('visibilitychange', onHide);
-  el.innerHTML = `<div class="wrap">${steps(3,'Paso 3 de 3 · Video')}
-    <div class="stage"><video id="v" autoplay muted playsinline></video>
-      <div class="phase" id="phase"></div><div class="q" id="q"></div>
-      <div class="timer" id="bar"><i id="fill"></i></div>
-      <div class="count"><span id="n"></span><small id="idx"></small></div>
-    </div>
-    <p class="small muted" style="margin-top:12px">Primero tenés 10 segundos para leer. Después se graba 30 segundos y pasa sola a la siguiente. No hay botón de repetir.</p></div>`;
-  if(stream) $('#v').srcObject=stream;
-  const fill=$('#fill');
-  function countdown(sec, cls, cb){
-    $('#bar').className='timer '+cls; let left=sec; const t0=performance.now();
-    $('#n').textContent=String(sec).padStart(2,'0');
-    function tick(){ if(!document.getElementById('n')) return; const e=(performance.now()-t0)/1000; const r=Math.max(0,1-e/sec); fill.style.transform=`scaleX(${r})`; const l=Math.ceil(sec-e); if(l!==left){left=l;$('#n').textContent=String(Math.max(0,l)).padStart(2,'0');} if(e<sec) t=requestAnimationFrame(tick); else cb(); }
-    t=requestAnimationFrame(tick);
+  function terminar(){ document.removeEventListener('visibilitychange',onHide); stream?.getTracks().forEach(x=>x.stop()); c.estado='completo · pendiente de análisis'; c.fin=new Date(); candidatos.unshift(c); go('fin'); }
+  function siguiente(){ idx++; mostrar(); }
+  function mostrar(){ if(idx>=seq.length){ terminar(); return; } seq[idx].tipo==='e' ? escrita(seq[idx].d) : video(seq[idx].q); }
+
+  function escrita(d){
+    el.innerHTML = `<div class="wrap">${steps(4,'La entrevista · un respiro')}
+      <h2>Momento de respirar</h2><p class="muted small">¡Queremos conocerte un poco más! No hay respuestas correctas: lo que cuenta es tu opinión.</p>
+      <div class="card"><p style="font-weight:600">${esc(d.t)}</p><div class="chips" id="ops"><span class="chip" data-v="A">${esc(d.a)}</span><span class="chip" data-v="B">${esc(d.b)}</span></div><input type="text" id="por" placeholder="¿Por qué? (una línea)" style="margin-top:10px"></div>
+      <div class="actions"><button class="btn blue" id="sig">Seguir</button></div></div>`;
+    $('#ops').onclick=e=>{const ch=e.target.closest('.chip'); if(!ch) return; $('#ops').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===ch)); c.escrito[d.k]={op:ch.dataset.v};};
+    $('#sig').onclick=()=>{ if(c.escrito[d.k]) c.escrito[d.k].por=$('#por').value.trim(); siguiente(); };
   }
-  function ask(){
-    if(i>=c.preguntas.length){ document.removeEventListener('visibilitychange',onHide); stream?.getTracks().forEach(x=>x.stop()); go('escrito'); return; }
-    const q=c.preguntas[i]; $('#idx').textContent=`Pregunta ${i+1} de ${c.preguntas.length}`;
+
+  function video(q){
+    const vn = seq.slice(0,idx+1).filter(x=>x.tipo==='v').length;
+    el.innerHTML = `<div class="wrap">${steps(4,'La entrevista · video')}
+      <div class="stage"><video id="v" autoplay muted playsinline></video>
+        <div class="phase" id="phase"></div><div class="q" id="q"></div>
+        <div class="timer" id="bar"><i id="fill"></i></div>
+        <div class="count"><span id="n"></span><small id="idx"></small></div>
+      </div>
+      <p class="small muted" style="margin-top:12px">10 segundos para leer + 30 para grabar. ¡Vamos!</p></div>`;
+    if(stream) $('#v').srcObject=stream;
+    const fill=$('#fill');
+    function countdown(sec, cls, cb){
+      $('#bar').className='timer '+cls; let left=sec; const t0=performance.now();
+      $('#n').textContent=String(sec).padStart(2,'0');
+      function tick(){ if(!document.getElementById('n')) return; const e=(performance.now()-t0)/1000; const r=Math.max(0,1-e/sec); fill.style.transform=`scaleX(${r})`; const l=Math.ceil(sec-e); if(l!==left){left=l;$('#n').textContent=String(Math.max(0,l)).padStart(2,'0');} if(e<sec) t=requestAnimationFrame(tick); else cb(); }
+      t=requestAnimationFrame(tick);
+    }
+    $('#idx').textContent=`Video ${vn} de ${vtot}`;
     $('#q').textContent=q.texto; $('#phase').textContent='Leé la pregunta';
     countdown(10,'',()=>{
       $('#phase').innerHTML='<span class="rec-dot"></span>Grabando · una sola toma';
       chunks=[];
       if(stream && window.MediaRecorder){ try{ rec=new MediaRecorder(stream,{mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')?'video/webm;codecs=vp8,opus':''}); rec.ondataavailable=e=>chunks.push(e.data); rec.start(); }catch(e){rec=null;} }
       countdown(30,'rec',()=>{
-        const done=()=>{ const blob=chunks.length?new Blob(chunks,{type:'video/webm'}):null; c.clips.push({q, url:blob?URL.createObjectURL(blob):null, dur:30}); i++; ask(); };
+        const done=()=>{ const blob=chunks.length?new Blob(chunks,{type:'video/webm'}):null; c.clips.push({q, url:blob?URL.createObjectURL(blob):null, dur:30}); siguiente(); };
         if(rec && rec.state!=='inactive'){ rec.onstop=done; rec.stop(); } else done();
       });
     });
   }
-  ask();
-};
-
-views.escrito = el => {
-  const c=cand; const D=[
-    {k:'q13', t:'Si pudieras elegir, ¿qué preferís?', a:'Ganar $10 por mes + aguinaldo', b:'Ganar $12 por mes, sin aguinaldo'},
-    {k:'q26', t:'Dos personas empiezan el mismo día. Una se esfuerza muchísimo con resultados promedio; la otra se esfuerza menos con resultados excelentes. Si solo podés premiar a una, ¿a cuál?', a:'A la que se esforzó más', b:'A la que obtuvo mejores resultados'},
-    {k:'q23', t:'¿Qué preferís?', a:'Ser el mejor de un equipo que funciona mal', b:'Formar parte de un equipo excelente, aunque no seas el mejor'},
-  ];
-  el.innerHTML = `<div class="wrap">${steps(4,'Último · 3 preguntas escritas')}
-    <h2>Tres preguntas rápidas</h2><p class="muted small">No hay respuesta correcta. Elegí y contanos por qué en una línea.</p>
-    ${D.map(d=>`<div class="card"><p style="font-weight:600">${esc(d.t)}</p><div class="chips" data-k="${d.k}"><span class="chip" data-v="A">${esc(d.a)}</span><span class="chip" data-v="B">${esc(d.b)}</span></div><input type="text" id="w-${d.k}" placeholder="¿Por qué?" style="margin-top:10px"></div>`).join('')}
-    <div class="actions"><button class="btn blue" id="next">Enviar postulación</button><button class="btn ghost" id="skip">Saltar y enviar</button></div></div>`;
-  el.querySelectorAll('.chips').forEach(g=>g.onclick=e=>{const ch=e.target.closest('.chip'); if(!ch) return; g.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===ch)); c.escrito[g.dataset.k]={op:ch.dataset.v};});
-  const fin=()=>{ D.forEach(d=>{ if(c.escrito[d.k]) c.escrito[d.k].por=$('#w-'+d.k).value.trim(); }); c.estado='completo · pendiente de análisis'; c.fin=new Date(); candidatos.unshift(c); go('fin'); };
-  $('#next').onclick=fin; $('#skip').onclick=fin;
+  mostrar();
 };
 
 views.fin = el => { el.innerHTML=`<div class="wrap">${steps(4,'Listo')}
-  <h2>Recibido, ${esc(cand.nombre.split(' ')[0])}.</h2>
-  <div class="ok"><b>Tu postulación quedó completa.</b><p class="small" style="margin:6px 0 0">Te escribimos por WhatsApp al ${esc(cand.wa)} <b>antes del ${esc(config.fechaRespuesta)}</b>, pases o no. Si no te llega nada para esa fecha, escribinos vos.</p></div>
+  <h2>¡Gracias, ${esc(cand.nombre.split(' ')[0])}!</h2>
+  <div class="ok"><b>Tu postulación quedó completa.</b><p class="small" style="margin:6px 0 0">Nos comunicamos con vos por WhatsApp al ${esc(cand.wa)} <b>dentro de los próximos 5 días</b> para contarte si avanzaste en el proceso. ¡Gracias por tu tiempo!</p></div>
   <p class="small muted" style="margin-top:14px">Lo que grabaste lo ve solo el equipo de selección. Se borra a los 90 días.</p>
   <div class="actions"><button class="btn ghost" onclick="go('landing')">Volver al inicio</button><a class="btn" href="#/panel" style="text-decoration:none">Ver cómo lo ve el dueño (demo)</a></div></div>`; };
 
 // ---------- PANEL DEL DUEÑO ----------
 // SIM: candidatos de ejemplo, ya analizados, para que el panel no arranque vacío.
 const EJEMPLOS = [
-  {id:'C-7K2QA', nombre:'Camila Ferreyra', edad:21, barrio:'Los Hornos', estado:'analizado', score:8, rojo:0, amar:1, fecha:'ayer',
+  {id:'C-7K2QA', nombre:'Camila Ferreyra', edad:21, barrio:'Los Hornos', dni:'44852963', wa:'221 615-0134', estado:'analizado', score:8, rojo:0, amar:1, fecha:'ayer',
    mapa:[['Estudia','Contador, 2º año','No estudia','"Dejé en marzo, no me daba el tiempo con el trabajo del kiosco"','ok','Actualizó y explicó'],['Trabaja','Kiosco (vigente en CV)','No trabaja','"Estuve hasta febrero, cerraron el local"','ok','Confirma con detalle'],['Domicilio','Los Hornos','Los Hornos','—','ok','Coincide'],['Turnos','—','T1, T3','V2: martes libre todo el día','warn','Aceptó 3 turnos con grilla incompleta']],
    rubrica:{Fluidez:2,Consistencia:2,Autocrítica:1,Criterio:2,Honestidad:1}, preguntas:['V1','R-est','R-trab','V4','V5','V6'], escrito:{q13:'A',q26:'B',q23:'B'}},
-  {id:'C-M3XPD', nombre:'Tomás Aguirre', edad:19, barrio:'Tolosa', estado:'analizado', score:4, rojo:2, amar:0, fecha:'ayer',
+  {id:'C-M3XPD', nombre:'Tomás Aguirre', edad:19, barrio:'Tolosa', dni:'46110478', wa:'221 489-2210', estado:'analizado', score:4, rojo:2, amar:0, fecha:'ayer',
    mapa:[['Trabaja','Grido Tolosa (vigente)','No trabaja','"No, ya no… bueno, voy algunos días"','red','Contradice'],['Estudia','—','No estudia','—','ok','Coincide'],['Domicilio','Tolosa','Tolosa','—','ok','Coincide'],['Video','—','—','Salió de la pantalla en la pregunta 2','red','Integridad del video']],
    rubrica:{Fluidez:1,Consistencia:0,Autocrítica:1,Criterio:1,Honestidad:1}, preguntas:['V1','R-trab','V4','V5','V6','V3'], escrito:{q13:'A',q26:'A',q23:'A'}},
-  {id:'C-Q9WLE', nombre:'Sofía Benítez', edad:23, barrio:'Centro (casco)', estado:'analizado', score:7, rojo:0, amar:0, fecha:'hace 2 días',
+  {id:'C-Q9WLE', nombre:'Sofía Benítez', edad:23, barrio:'Centro (casco)', dni:'43207851', wa:'221 302-7745', estado:'analizado', score:7, rojo:0, amar:0, fecha:'hace 2 días',
    mapa:[['Estudia','Marketing, UTN, mar y jue 18–22','Estudia, mar y jue, noche','"Martes y jueves curso de 18 a 22, el resto libre"','ok','Confirma con detalle'],['Experiencia','Nike Store, ene 2025–may 2026','—','"Mi encargada era Vanesa, cerrábamos a las 21 los sábados…"','ok','Detalle verificable'],['Domicilio','Centro','Centro','—','ok','Coincide']],
    rubrica:{Fluidez:2,Consistencia:2,Autocrítica:1,Criterio:1,Honestidad:1}, preguntas:['V1','R-det','V4','V5','V6','V3'], escrito:{q13:'B',q26:'B',q23:'B'}},
 ];
-let ptab='cand';
+let ptab='cand', fEstado='todos', fFlags='todos', fZona='todas';
 views.panel = el => {
   el.className=''; el.innerHTML=`<div class="panel"><nav>
     <button data-t="cand" class="${ptab==='cand'?'on':''}">Candidatos</button>
@@ -510,19 +521,32 @@ views.panel = el => {
   ({cand:pCand, cond:pCond, reglas:pReglas, bloq:pBloq, preg:pPreg})[ptab]($('#ps'));
 };
 function pCand(s){
-  const filas=[...candidatos.map(c=>({real:c, id:c.id, nombre:c.nombre, edad:c.edad, barrio:c.barrio, estado:c.estado, score:null, rojo:c.reglas?.filter(r=>r.tipo==='rojo').length||0, amar:(c.reglas?.filter(r=>r.tipo==='amarillo').length||0)+c.diff.filter(d=>['omisión','contradicción','desactualizado'].includes(d.estado)).length, fecha:'recién'})), ...EJEMPLOS];
-  s.innerHTML=`<div class="eyebrow">Convocatoria de septiembre</div><h2>Candidatos <span class="muted" style="font-weight:400">· ${filas.length}</span></h2>
+  const filas=[...candidatos.map(c=>({real:c, id:c.id, nombre:c.nombre, edad:c.edad, barrio:c.barrio, dni:c.dni, wa:c.wa, estado:c.estado, score:null, rojo:c.reglas?.filter(r=>r.tipo==='rojo').length||0, amar:(c.reglas?.filter(r=>r.tipo==='amarillo').length||0)+c.diff.filter(d=>['omisión','contradicción','desactualizado'].includes(d.estado)).length, fecha:'recién'})), ...EJEMPLOS];
+  const zonas=[...new Set(filas.map(f=>f.barrio).filter(Boolean))].sort();
+  const estadoDe=f=> f.estado.startsWith('descartado')?'descartado':(f.estado==='analizado'?'analizado':'pendiente');
+  const flagDe=f=> f.rojo?'rojo':(f.amar?'amarillo':'limpio');
+  const vis=filas.filter(f=>(fEstado==='todos'||estadoDe(f)===fEstado)&&(fFlags==='todos'||flagDe(f)===fFlags)&&(fZona==='todas'||f.barrio===fZona));
+  const chip=(g,v,l,cur)=>`<span class="chip ${cur===v?'on':''}" data-g="${g}" data-v="${v}">${l}</span>`;
+  s.innerHTML=`<div class="eyebrow">Convocatoria de septiembre</div><h2>Candidatos <span class="muted" style="font-weight:400">· ${vis.length}${vis.length!==filas.length?` de ${filas.length}`:''}</span></h2>
     <p class="small muted">Ordenados por score de rúbrica. El score ordena, no decide: cada 0 y cada flag tiene su cita textual adentro.</p>
-    <table><thead><tr><th>Candidato</th><th>Edad · zona</th><th>Estado</th><th>Score</th><th>Flags</th><th>Recibido</th></tr></thead><tbody>
-    ${filas.map((f,i)=>`<tr class="click" data-i="${i}"><td><b>${esc(f.nombre||'(sin nombre)')}</b><br><span class="small muted">${f.id}</span></td><td>${f.edad??'—'} · ${esc(f.barrio||'—')}</td><td><span class="pill ${f.estado.startsWith('descartado')?'red':f.estado==='analizado'?'ok':'grey'}">${esc(f.estado)}</span></td><td class="score">${f.score!==null?f.score+'/10':'—'}</td><td>${f.rojo?`<span class="pill red">${f.rojo} rojo</span> `:''}${f.amar?`<span class="pill warn">${f.amar} amarillo</span>`:''}${!f.rojo&&!f.amar?'<span class="pill ok">limpio</span>':''}</td><td class="small muted">${f.fecha}</td></tr>`).join('')}
-    </tbody></table>`;
-  s.querySelectorAll('tr.click').forEach(tr=>tr.onclick=()=>{ const f=filas[tr.dataset.i]; f.real?pDetalleReal(s,f.real):pDetalleEj(s,f); });
+    <div class="filtros" id="filtros">
+      <div><span class="flabel">Estado</span><div class="chips">${chip('e','todos','Todos',fEstado)+chip('e','analizado','Analizados',fEstado)+chip('e','pendiente','Pendientes',fEstado)+chip('e','descartado','Descartados',fEstado)}</div></div>
+      <div><span class="flabel">Flags</span><div class="chips">${chip('f','todos','Todos',fFlags)+chip('f','limpio','Limpio',fFlags)+chip('f','amarillo','Con amarillos',fFlags)+chip('f','rojo','Con rojos',fFlags)}</div></div>
+      <div><span class="flabel">Zona</span><select id="fzona"><option value="todas">Todas</option>${zonas.map(z=>`<option ${fZona===z?'selected':''}>${esc(z)}</option>`).join('')}</select></div>
+    </div>
+    <table><thead><tr><th>Contacto</th><th>Edad · zona</th><th>Estado</th><th>Score</th><th>Flags</th><th>Recibido</th></tr></thead><tbody>
+    ${vis.map((f,i)=>`<tr class="click" data-i="${i}"><td><b>${esc(f.nombre||'(sin nombre)')}</b><br><span class="small" style="font-weight:600">${esc(f.wa||'—')}</span><br><span class="small muted">DNI ${esc(f.dni||'—')} · ${f.id}</span></td><td>${f.edad??'—'} · ${esc(f.barrio||'—')}</td><td><span class="pill ${f.estado.startsWith('descartado')?'red':f.estado==='analizado'?'ok':'grey'}">${esc(f.estado)}</span></td><td class="score">${f.score!==null?f.score+'/10':'—'}</td><td>${f.rojo?`<span class="pill red">${f.rojo} rojo</span> `:''}${f.amar?`<span class="pill warn">${f.amar} amarillo</span>`:''}${!f.rojo&&!f.amar?'<span class="pill ok">limpio</span>':''}</td><td class="small muted">${f.fecha}</td></tr>`).join('')}
+    </tbody></table>${vis.length?'':'<p class="small muted" style="margin-top:14px">Ningún candidato coincide con esos filtros.</p>'}`;
+  $('#filtros').onclick=e=>{const ch=e.target.closest('.chip'); if(!ch) return; if(ch.dataset.g==='e') fEstado=ch.dataset.v; else fFlags=ch.dataset.v; pCand(s);};
+  $('#fzona').onchange=e=>{fZona=e.target.value; pCand(s);};
+  s.querySelectorAll('tr.click').forEach(tr=>tr.onclick=()=>{ const f=vis[tr.dataset.i]; f.real?pDetalleReal(s,f.real):pDetalleEj(s,f); });
 }
 function mapaHTML(rows){ return `<div class="map"><div class="hd">Dato</div><div class="hd">CV</div><div class="hd">Formulario</div><div class="hd">Video</div>${rows.map(r=>`<div class="k">${esc(r[0])}</div><div>${esc(r[1])}</div><div>${esc(r[2])}</div><div class="c-${r[4]}">${esc(r[3])}<br><span class="pill ${r[4]}">${esc(r[5])}</span></div>`).join('')}</div>`; }
 function rubricaHTML(r){ const tot=Object.values(r).reduce((a,b)=>a+b,0); return `<table><thead><tr><th>Dimensión</th><th>0–2</th></tr></thead><tbody>${Object.entries(r).map(([k,v])=>`<tr><td>${k}</td><td class="score">${v}</td></tr>`).join('')}<tr><td><b>Total</b></td><td class="score"><b>${tot}/10</b> ${tot>=6&&!Object.values(r).includes(0)?'<span class="pill ok">pasa a presencial</span>':'<span class="pill red">no pasa</span>'}</td></tr></tbody></table>`; }
 function pDetalleEj(s,f){
   s.innerHTML=`<button class="btn ghost" style="width:auto;padding:8px 16px;font-size:13px" id="back">← Candidatos</button>
     <h2 style="margin-top:16px">${esc(f.nombre)} <span class="muted" style="font-weight:400;font-size:16px">${f.edad} · ${esc(f.barrio)}</span></h2>
+    <div class="card" style="margin:10px 0 4px"><div class="eyebrow">Contacto</div><p style="margin:0;font-weight:800;font-size:18px">WhatsApp ${esc(f.wa)}</p><p class="small muted" style="margin:4px 0 0">DNI ${esc(f.dni)} · ${esc(f.barrio)}</p></div>
     <h3>Mapa de consistencia</h3>${mapaHTML(f.mapa)}
     <h3>Rúbrica (sobre transcripción)</h3>${rubricaHTML(f.rubrica)}
     <h3>Preguntas que recibió</h3><ol class="qlist">${f.preguntas.map(id=>{const q=[...FIJAS,...RELLENO].find(x=>x.id===id); return `<li>${q?esc(q.texto):'<i>Repregunta generada por el motor de cruce</i>'} <span class="tag ${id.startsWith('R')?'dyn':''}">${id.startsWith('R')?'dinámica':'fija'}</span></li>`;}).join('')}</ol>
@@ -534,7 +558,8 @@ function pDetalleReal(s,c){
   const rows=c.diff.map(d=>{ const clip=c.clips.find(k=>k.q.id===d.q?.id); const cls=d.estado==='contradicción'?'red':['omisión','desactualizado'].includes(d.estado)?'warn':d.estado==='coincide'?'ok':'grey'; return [d.k,d.cv,d.form, clip?'Clip grabado · pendiente de transcripción':(d.q?'Repregunta asignada':'—'), cls, d.estado]; });
   s.innerHTML=`<button class="btn ghost" style="width:auto;padding:8px 16px;font-size:13px" id="back">← Candidatos</button>
     <h2 style="margin-top:16px">${esc(c.nombre||'(sin nombre)')} <span class="muted" style="font-weight:400;font-size:16px">${c.edad??'—'} · ${esc(c.barrio)}</span></h2>
-    <p class="small"><span class="pill grey">${esc(c.estado)}</span> · DNI ${esc(c.dni)} · WhatsApp ${esc(c.wa)} · inició ${c.inicio?c.inicio.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}):'—'}${c.tabSwitch?` · <span class="pill red">salió de pantalla ${c.tabSwitch}×</span>`:''}</p>
+    <div class="card" style="margin:10px 0 4px"><div class="eyebrow">Contacto</div><p style="margin:0;font-weight:800;font-size:18px">WhatsApp ${esc(c.wa)}</p><p class="small muted" style="margin:4px 0 0">DNI ${esc(c.dni)} · ${esc(c.barrio)}</p></div>
+    <p class="small"><span class="pill grey">${esc(c.estado)}</span> · inició ${c.inicio?c.inicio.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}):'—'}${c.tabSwitch?` · <span class="pill red">salió de pantalla ${c.tabSwitch}×</span>`:''}</p>
     <h3>Reglas duras</h3>${c.reglas?.length?`<ul class="small">${c.reglas.map(r=>`<li><span class="pill ${r.tipo==='rojo'?'red':'warn'}">${r.tipo}</span> <b>${esc(r.k)}:</b> ${esc(r.txt)}</li>`).join('')}</ul>`:'<p class="small muted">Sin flags de reglas.</p>'}
     <h3>Mapa de consistencia CV · formulario · video</h3>${mapaHTML(rows)}
     <h3>Preguntas que recibió</h3><ol class="qlist">${c.preguntas.map(q=>`<li>${esc(q.texto)} <span class="tag ${q.tipo==='dinámica'?'dyn':''}">${q.tipo}</span></li>`).join('')}</ol>
